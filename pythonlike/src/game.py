@@ -1,5 +1,6 @@
 import tcod
-from tcod import event
+
+from event_handler import handle_events
 
 
 def initialize():
@@ -9,18 +10,6 @@ def initialize():
     tcod.console_init_root(c_width, c_height, title="pythonlike", fullscreen=False, renderer=tcod.RENDERER_SDL2)
 
     # TODO: Render initial map
-
-
-def event_handler():
-    for x in event.get():
-        if x.type == "QUIT":
-            return "quit"
-        elif x.type == "KEYDOWN":
-            key = x.scancode
-            return key
-        else:
-            pass
-    return None
 
 
 def update(events):
@@ -36,7 +25,7 @@ def main():
     initialize()
     game = True
     while game:
-        action = event_handler()
+        action = handle_events()
         if action == "quit":
             print("quit")
             game = False
