@@ -2,14 +2,15 @@ from tcod import event
 
 
 def handle_events():
-    for x in event.get():
-        if x.type == "QUIT":
-            return "quit"
-        elif x.type == "KEYDOWN":
-            return handle_keydown(x.scancode, x.mod)
-        else:
-            pass
-    return None
+    blocking = True
+    while blocking:
+        for x in event.get():
+            if x.type == "QUIT":
+                return "quit"
+            elif x.type == "KEYDOWN":
+                return handle_keydown(x.scancode, x.mod)
+            else:
+                continue
 
 
 def handle_keydown(key, mod):
