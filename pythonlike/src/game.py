@@ -7,22 +7,30 @@ def initialize():
     c_width, c_height = 80, 50
 
     tcod.console_set_custom_font("data/arial10x10.png", tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_TCOD)
-    tcod.console_init_root(c_width, c_height, title="pythonlike", fullscreen=False, renderer=tcod.RENDERER_SDL2)
+    c = tcod.console_init_root(c_width, c_height, "pythonlike", False, tcod.RENDERER_SDL2, "F")
 
-    # TODO: Render initial map
+    # TODO: Create and populate map
+
+    c.clear(ch=ord(" "), fg=tcod.white, bg=tcod.black)
+    # TODO: Render map
+    tcod.console_flush()
+
+    return c
 
 
 def update(events):
-    # tcod.console_clear(0)
     pass
 
 
-def render():
-    pass
+def render(c):
+        c.clear(ch=ord(" "), fg=tcod.white, bg=tcod.black)
+        c.put_char(40, 25, ord("@"))
+        tcod.console_flush()
 
 
 def main():
-    initialize()
+    c = initialize()
+    print("Initialized")
     game = True
     while game:
         action = handle_events()
@@ -31,8 +39,9 @@ def main():
             game = False
         elif action:
             print(action)
+        print("Event handled")
         # update(events)
-        # render()
+        render(c)
 
 
 if __name__ == "__main__":
