@@ -12,7 +12,15 @@ def initialize():
 
 
 def event_handler():
-    pass
+    for x in event.get():
+        if x.type == "QUIT":
+            return "quit"
+        elif x.type == "KEYDOWN":
+            key = x.scancode
+            return key
+        else:
+            pass
+    return None
 
 
 def update(events):
@@ -28,8 +36,12 @@ def main():
     initialize()
     game = True
     while game:
-        pass
-        # event_handler
+        action = event_handler()
+        if action == "quit":
+            print("quit")
+            game = False
+        elif action:
+            print(action)
         # update(events)
         # render()
 
