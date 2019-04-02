@@ -13,12 +13,13 @@ class GameMap:
         # TODO: Populate
 
     def init_tiles(self, w, h):
+        # TODO: Map generator
         tiles = np.full((w, h), Floor())
 
         return tiles
 
 
-# TODO: More tiles
+# Map tiles
 class Tile:
     def __init__(self, char, color, transparent, walkable):
         self.char = char
@@ -27,6 +28,7 @@ class Tile:
         self.walkable = walkable
 
 
+# TODO: More tiles
 class Empty(Tile):
     def __init__(self, char=chr(32), color=tcod.black, transparent=False, walkable=False):
         super().__init__(char, color, transparent, walkable)
