@@ -2,6 +2,7 @@ import tcod
 
 from event_handler import handle_events
 from game_map import GameMap
+from render import render
 
 
 def initialize():
@@ -22,12 +23,6 @@ def initialize():
 
 def update(events, m):
     pass
-
-
-def render(c, m):
-        c.clear(ch=ord(" "), fg=tcod.white, bg=tcod.black)
-        # c.put_char(40, 25, ord("@"))
-        tcod.console_flush()
 
 
 def main():
