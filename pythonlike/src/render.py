@@ -1,20 +1,29 @@
 import tcod
+import numpy as np
 from game_map import Tile
 
 
-def render(c, game_map, entities=None):
-    render = render_map(game_map)
-    render = render_entities(render, entities)
+def render(console, game_map, entities=None):
+    # render = np.full_like(m.tiles, chr(32))
+    # render = render_map(render, m)
+    # render = render_entities(render, entities)
 
-    # TODO: Make console "c" draw "render"
-    c.clear(ch=ord(" "), fg=tcod.white, bg=tcod.black)
+    console.clear(ch=ord(" "), fg=tcod.white, bg=tcod.black)
+    # TODO: Make console draw things
     # c.put_char(40, 25, ord("@"))
+    render_map(console, game_map)
     tcod.console_flush()
 
 
-def render_map(game_map):
+def render_map(console, game_map):
     # TODO: Make a drawable array of static map elements in a format console can draw
-    return ""
+    # r = render
+
+    for (w, h), tile in np.ndenumerate(game_map.tiles):
+        # r[w, h] = tile.char
+        console.print(w, h, tile.char, tile.color)
+
+    # return r
 
 
 def render_entities(render, entities):

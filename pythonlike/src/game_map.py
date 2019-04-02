@@ -8,41 +8,35 @@ class GameMap:
         self.w = w
         self.h = h
         self.tcod_map = tcod.map.Map(w, h)
-        self.explored = np.zeros((w, h), dtype=bool, order="F")
-        self.tiles = self.init_tiles()
+        self.tiles = self.init_tiles(w, h)
+        self.explored = np.zeros_like(self.tiles)
         # TODO: Populate
 
-    def init_tiles(self):
-        tiles = [[Floor for y in range(self.h)] for x in range(self.w)]
+    def init_tiles(self, w, h):
+        tiles = np.full((w, h), Floor())
 
         return tiles
 
 
 # TODO: More tiles
 class Tile:
-    def __init__(self):
-        self. char = None
-        self.color = None
-        self.transparent = None
-        self.walkable = None
+    def __init__(self, char, color, transparent, walkable):
+        self.char = char
+        self.color = color
+        self.transparent = transparent
+        self.walkable = walkable
 
 
 class Empty(Tile):
-    Tile.char = chr(32)
-    Tile.color = tcod.black
-    Tile.transparent = False
-    Tile.walkable = False
+    def __init__(self, char=chr(32), color=tcod.black, transparent=False, walkable=False):
+        super().__init__(char, color, transparent, walkable)
 
 
 class Floor(Tile):
-    Tile.char = chr(46)
-    Tile.color = tcod.white
-    Tile.transparent = True
-    Tile.walkable = True
+    def __init__(self, char=chr(46), color=tcod.white, transparent=True, walkable=True):
+        super().__init__(char, color, transparent, walkable)
 
 
 class Wall(Tile):
-    Tile.char = chr(35)
-    Tile.color = tcod.white
-    Tile.transparent = False
-    Tile.walkable = False
+    def __init__(self, char=chr(35), color=tcod.white, transparent=False, walkable=False):
+        super().__init__(char, color, transparent, walkable)

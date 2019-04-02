@@ -7,7 +7,7 @@ from render import render
 
 def initialize():
     c_width, c_height = 80, 50
-    m_width, m_height = 70, 40
+    m_width, m_height = c_width, c_height
 
     tcod.console_set_custom_font("data/arial10x10.png", tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_TCOD)
     c = tcod.console_init_root(c_width, c_height, "pythonlike", False, tcod.RENDERER_SDL2, "F")
@@ -27,12 +27,11 @@ def update(events, m):
 
 def main():
     c, m = initialize()
-    game = True
-    while game:
+    while True:
         action = handle_events()
         if action == "quit":
             print("quit")
-            game = False
+            break
         elif action:
             print(action)
         # update(events, m)
