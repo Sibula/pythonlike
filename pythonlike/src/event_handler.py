@@ -14,15 +14,26 @@ def handle_events():
 
 
 def handle_keydown(key, mod):
-    if key in range(89, 98):
-        direction = {89: "SW", 90: "S", 91: "SE", 92: "W", 93: "STAY", 94: "E", 95: "NW", 96:  "N", 97: "NE"}
-        return "move {}".format(direction[key])  # NUM_5 only works with numlock on (returns different code)
-    # elif key == 4:
-    #     return "toggle"
+    if key in commands:
+        return commands[key]
     else:
         return key, mod
 
 
+commands = {
+    # Movement
+    89: {"move": (-1, 1)},   # KP_1
+    90: {"move": (0, 1)},    # KP_2
+    91: {"move": (1, 1)},    # KP_3
+    92: {"move": (-1, 0)},   # KP_4
+    93: {"move": (0, 0)},    # KP_5 NUMLOCK ON
+    156: {"move": (0, 0)},   # KP_5 NUMLOCK OFF
+    94: {"move": (1, 0)},    # KP_6
+    95: {"move": (-1, -1)},  # KP_7
+    96: {"move": (0, -1)},   # KP_8
+    97: {"move": (1, -1)}    # KP_9
+
+}
 '''
 LSHIFT		1
 RSHIFT		2
