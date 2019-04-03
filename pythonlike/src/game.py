@@ -21,8 +21,7 @@ def initialize():
     game_map = GameMap(m_width, m_height)
 
     # Initialize entities
-    # entities = entity.init_entities(game_map)
-    entities = [entity.Player(0, 0)]
+    entities = entity.init_entities(game_map)
 
     # Initial rendering of the map
     render(console, game_map, entities)
