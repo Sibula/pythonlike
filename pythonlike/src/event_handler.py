@@ -17,6 +17,8 @@ def handle_keydown(key, mod):
     if key in range(89, 98):
         direction = {89: "SW", 90: "S", 91: "SE", 92: "W", 93: "STAY", 94: "E", 95: "NW", 96:  "N", 97: "NE"}
         return "move {}".format(direction[key])  # NUM_5 only works with numlock on (returns different code)
+    # elif key == 4:
+    #     return "toggle"
     else:
         return key, mod
 

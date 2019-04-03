@@ -1,5 +1,6 @@
 import tcod
 
+import entity
 from event_handler import handle_events
 from game_map import GameMap
 from render import render
@@ -17,15 +18,18 @@ def initialize():
     # Initialize map
     game_map = GameMap(m_width, m_height)
 
-    # Initial rendering of the map
-    render(console, game_map)
+    # Initialize entities
+    entities = [entity.Player(0, 0)]
 
-    return console, game_map
+    # Initial rendering of the map
+    render(console, game_map, entities)
+
+    return console, game_map, entities
 
 
 def main():
     # Initialize
-    console, game_map = initialize()
+    console, game_map, entities = initialize()
 
     while True:
         # Process input
@@ -33,6 +37,8 @@ def main():
         if action == "quit":
             print("quit")
             break
+        # elif action == "toggle":
+        #     game_map.tiles[(5, 5)].toggle()
         elif action:
             print(action)
 
@@ -40,7 +46,7 @@ def main():
         # TODO: Updater
 
         # Render game
-        render(console, game_map)
+        render(console, game_map, entities)
 
 
 if __name__ == "__main__":
