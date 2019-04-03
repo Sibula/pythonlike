@@ -4,7 +4,7 @@ import entity
 from event_handler import handle_events
 from game_map import GameMap
 from render import render
-# from update import update
+from update import update
 
 
 def initialize():
@@ -40,7 +40,7 @@ def main():
             break
 
         # Update game
-        # update(game_map, entities, action)
+        update(game_map, entities, action)
 
         # Render game
         render(console, game_map, entities)
