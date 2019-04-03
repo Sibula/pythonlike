@@ -12,7 +12,8 @@ def initialize():
     m_width, m_height = c_width, c_height
 
     # Initialize console
-    tcod.console_set_custom_font("data/arial10x10.png", tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_TCOD)
+    tcod.console_set_custom_font("data/terminal12x12_gs_ro.png",
+                                 tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_ASCII_INROW)
     console = tcod.console_init_root(c_width, c_height, "pythonlike", False, tcod.RENDERER_SDL2, "F")
 
     # Initialize map
