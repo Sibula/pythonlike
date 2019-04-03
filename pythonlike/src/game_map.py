@@ -55,8 +55,3 @@ class Door(Tile):
         self.char = "_" if self.char == "+" else "+"
         self.transparent = not self.transparent
         self.walkable = not self.walkable
-
-    # @property
-    # def char(self):
-    #     return "_" if self.open else "+"
-
