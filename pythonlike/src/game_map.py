@@ -14,10 +14,13 @@ class GameMap:
     def init_tiles(self, w, h):
         # TODO: Map generator
         tiles = np.full((w, h), Floor())
-        # tiles[(5, 5)] = Door()
-        # tiles[(10, 10)] = Door()
+        tiles[(5, 5)] = Door()
+        tiles[(10, 10)] = Wall()
 
         return tiles
+
+    def is_walkable(self, w, h):
+        return self.tiles[w, h].walkable
 
 
 class Tile:
