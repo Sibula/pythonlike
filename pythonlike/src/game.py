@@ -4,6 +4,7 @@ import entity
 from event_handler import handle_events
 from game_map import GameMap
 from render import render
+# from update import update
 
 
 def initialize():
@@ -20,6 +21,7 @@ def initialize():
     game_map = GameMap(m_width, m_height)
 
     # Initialize entities
+    # entities = entity.init_entities(game_map)
     entities = [entity.Player(0, 0)]
 
     # Initial rendering of the map
@@ -35,16 +37,11 @@ def main():
     while True:
         # Process input
         action = handle_events()
-        if action == "quit":
-            print("quit")
+        if action.name == "quit":
             break
-        # elif action == "toggle":
-        #     game_map.tiles[(5, 5)].toggle()
-        elif action:
-            print(action)
 
         # Update game
-        # TODO: Updater
+        # update(game_map, entities, action)
 
         # Render game
         render(console, game_map, entities)
