@@ -18,6 +18,17 @@ def move(game_map, entities, action):
         if type(ent) == entity.Player:
             dw, dh = action.param
             nw, nh = entities[i].w + dw, entities[i].h + dh
-            if game_map.is_walkable(nw, nh):
+            if is_empty(nw, nh, game_map, entities):
                 entities[i].w, entities[i].h = nw, nh
         break
+
+
+def is_empty(w, h, game_map, entities):
+    walkable = game_map.is_walkable(w, h)
+    ent_coords = [(ent.w, ent.h) for ent in entities]
+    occupied = False
+    for ent_w, ent_h in ent_coords:
+        if (ent_w, ent_h) == (w, h):
+            occupied = True
+
+    return walkable and not occupied

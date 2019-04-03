@@ -16,9 +16,9 @@ class Player(Entity):
 
 
 class Rat(Entity):
-    def __init__(self, w, h, char=chr(64), color=tcod.yellow):
+    def __init__(self, w, h, char=chr(114), color=tcod.red):
         super().__init__(w, h, char, color)
 
 
 def init_entities(game_map):
-    return [Player(0, 0)]
+    return [Player(0, 0), Rat(10, 5)]
