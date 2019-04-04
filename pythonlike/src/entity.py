@@ -8,6 +8,11 @@ class Entity:
         self.name = name
         self.char = char
         self.color = color
+        # hp (how to handle max hp?)
+        # base damage
+        # base defence
+        # accuracy
+        # equipment
 
 
 # Entities
