@@ -2,22 +2,23 @@ import tcod
 
 
 class Entity:
-    def __init__(self, w, h, char, color):
+    def __init__(self, w, h, name, char, color):
         self.w = w
         self.h = h
+        self.name = name
         self.char = char
         self.color = color
 
 
 # Entities
 class Player(Entity):
-    def __init__(self, w, h, char=chr(64), color=tcod.yellow):
-        super().__init__(w, h, char, color)
+    def __init__(self, w, h, name="player", char=chr(64), color=tcod.yellow):
+        super().__init__(w, h, name, char, color)
 
 
 class Rat(Entity):
-    def __init__(self, w, h, char=chr(114), color=tcod.red):
-        super().__init__(w, h, char, color)
+    def __init__(self, w, h, name="rat", char=chr(114), color=tcod.red):
+        super().__init__(w, h, name, char, color)
 
 
 def init_entities(game_map):
