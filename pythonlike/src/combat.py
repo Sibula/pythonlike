@@ -1,4 +1,4 @@
-def attack(attacker, defender, method, entities):
+def attack(attacker, defender, entities):
     # Choose handler by method (maybe not needed?)
 
     # Calculate values (use sigmoid for probability)

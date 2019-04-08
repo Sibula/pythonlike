@@ -9,7 +9,7 @@ class Entity:
         self.char = char
         self.color = color
         # tiny (<0.5m / <3kg), small (0.5-1.2m / 3-25kg), medium (1.2-2.4m / 25-200kg), large (>2.4m / >200kg)
-        # acc   0.25x                     0.5x                          1x                        2x
+        # acc   0.6x                     0.8x                          1x                        1.2x
         # enum    0                         1                           2                         3
         self.size = size
         self.hp = hp  # (how to handle max hp?) (calculate from base stats + modifier?)
