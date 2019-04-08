@@ -36,6 +36,7 @@ def main():
     while True:
         # Process input
         action = handle_events()
+        # Can handling quit action be moved to update()?
         if action.name == "quit":
             break
 
