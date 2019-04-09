@@ -35,4 +35,5 @@ class Rat(Entity):
 
 def init_entities(game_map):
     """Initialize entities list."""
-    return [Player(0, 0), Rat(10, 5)]
+    entities = [Player(0, 0), Rat(10, 5)]
+    return entities
