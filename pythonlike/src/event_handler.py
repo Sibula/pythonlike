@@ -8,22 +8,23 @@ class Action:
 
 
 def handle_events():
+    """Wait for user input and return an Action object."""
     blocking = True
     while blocking:
         for x in event.get():
             if x.type == "QUIT":
                 return Action("quit")
             elif x.type == "KEYDOWN":
-                return handle_keydown(x.scancode, x.mod)
+                return _handle_keydown(x.scancode, x.mod)
             else:
                 continue
 
 
-def handle_keydown(key, mod):
+def _handle_keydown(key, mod):
     if key in commands:
         return commands[key]
     else:
-        return Action("invalid")
+        return Action("invalid", (key, mod))
 
 
 commands = {
