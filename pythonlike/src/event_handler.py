@@ -9,8 +9,7 @@ class Action:
 
 def handle_events():
     """Wait for user input and return an Action object."""
-    blocking = True
-    while blocking:
+    while True:
         for x in event.get():
             if x.type == "QUIT":
                 return Action("quit")

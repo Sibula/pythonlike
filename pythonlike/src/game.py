@@ -1,48 +1,87 @@
-import tcod
-
 import entity
+from combat import attack
 from event_handler import handle_events
-from game_map import GameMap
-from render import render
-from update import update
 
 
-def initialize():
-    # Set variables
-    c_width, c_height = 80, 50
-    m_width, m_height = c_width, c_height
-
-    # Initialize console
-    tcod.console_set_custom_font("data/terminal12x12_gs_ro.png",
-                                 tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_ASCII_INROW)
-    console = tcod.console_init_root(c_width, c_height, "pythonlike", False, tcod.RENDERER_SDL2, "F")
-
-    # Initialize map
-    game_map = GameMap(m_width, m_height)
-
-    # Initialize entities
-    entities = entity.init_entities(game_map)
-
-    # Initial rendering of the map
-    render(console, game_map, entities)
-
-    return console, game_map, entities
+def process_step(game_map, entities):
+    action = handle_events()
+    _update(game_map, entities, action)
 
 
-def main():
-    # Initialize
-    console, game_map, entities = initialize()
+def _update(game_map, entities, action):
+    """Update game_map and entities according to player action."""
+    # If the player closes the window raise SystemExit.
+    if action.name == "quit":
+        raise SystemExit()
+    # If command was invalid do something.
+    if action.name == "invalid":
+        _invalid(action.param)
+    else:
+        # Update the game if the command was valid.
+        if action.name == "move":
+            _move(game_map, entities, action)
+        if action.name == "stay":
+            pass
+        if action.name == "interact":
+            _interact()
+        if action.name == "loot":
+            _loot()
 
-    while True:
-        # Process input
-        action = handle_events()
-
-        # Update game
-        update(game_map, entities, action)
-
-        # Render game
-        render(console, game_map, entities)
+        # At the end of checking actions process turns for other entities.
 
 
-if __name__ == "__main__":
-    main()
+def _invalid(param):
+    print("Invalid command: {}".format(param))
+
+
+def _move(game_map, entities, action):
+    player = get_player(entities)
+    index = get_entity_index(player.w, player.h, entities)
+    dw, dh = action.param
+    nw, nh = player.w + dw, player.h + dh
+    if game_map.is_walkable(nw, nh) and not occupied(nw, nh, entities):
+        player.w, player.h = nw, nh
+        pass
+    elif occupied(nw, nh, entities):
+        print("You attack the {}".format(get_entity(nw, nh, entities).name))
+        attack(index, get_entity_index(nw, nh, entities), entities)
+
+
+def _interact():
+    print("interact")
+
+
+def _loot():
+    print("loot")
+
+
+def occupied(w, h, entities):
+    # Check if the tile at (w, h) is occupied by an entity.
+    has_entity = False
+    for ent_w, ent_h in [(ent.w, ent.h) for ent in entities]:
+        if (ent_w, ent_h) == (w, h):
+            has_entity = True
+
+    return has_entity
+
+
+def get_entity(w, h, entities):
+    # Return entity at (w, h).
+    for ent in entities:
+        if (ent.w, ent.h) == (w, h):
+            return ent
+
+
+def get_entity_index(w, h, entities):
+    # Return index of entity at (w, h) in entities.
+    for i, ent in enumerate(entities):
+        if (ent.w, ent.h) == (w, h):
+            return i
+    return None
+
+
+def get_player(entities):
+    # Find the Player object from entities and return it.
+    for ent in entities:
+        if type(ent) == entity.Player:
+            return ent
