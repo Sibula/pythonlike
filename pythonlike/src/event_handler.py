@@ -33,8 +33,8 @@ commands = {
     90: Action("move", (0, 1)),    # KP_2
     91: Action("move", (1, 1)),    # KP_3
     92: Action("move", (-1, 0)),   # KP_4
-    93: Action("move", (0, 0)),    # KP_5 NUMLOCK ON
-    156: Action("move", (0, 0)),   # KP_5 NUMLOCK OFF
+    93: Action("stay"),            # KP_5 NUMLOCK ON
+    156: Action("stay"),           # KP_5 NUMLOCK OFF
     94: Action("move", (1, 0)),    # KP_6
     95: Action("move", (-1, -1)),  # KP_7
     96: Action("move", (0, -1)),   # KP_8

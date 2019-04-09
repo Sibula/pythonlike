@@ -11,6 +11,8 @@ def update(game_map, entities, action):
         # Update the game if the command was valid.
         if action.name == "move":
             _move(game_map, entities, action)
+        if action.name == "stay":
+            pass
         # At the end of checking actions process turns for other entities.
 
 
