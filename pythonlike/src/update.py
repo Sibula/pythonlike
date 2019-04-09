@@ -4,6 +4,9 @@ from combat import attack
 
 def update(game_map, entities, action):
     """Update game_map and entities according to player action."""
+    # If the player closes the window raise SystemExit.
+    if action.name == "quit":
+        raise SystemExit()
     # If command was invalid do something.
     if action.name == "invalid":
         _invalid(action.param)
@@ -17,6 +20,7 @@ def update(game_map, entities, action):
             _interact()
         if action.name == "loot":
             _loot()
+
         # At the end of checking actions process turns for other entities.
 
 
