@@ -13,6 +13,10 @@ def update(game_map, entities, action):
             _move(game_map, entities, action)
         if action.name == "stay":
             pass
+        if action.name == "interact":
+            _interact()
+        if action.name == "loot":
+            _loot()
         # At the end of checking actions process turns for other entities.
 
 
@@ -31,6 +35,14 @@ def _move(game_map, entities, action):
     elif occupied(nw, nh, entities):
         print("You attack the {}".format(get_entity(nw, nh, entities).name))
         attack(index, get_entity_index(nw, nh, entities), entities)
+
+
+def _interact():
+    print("interact")
+
+
+def _loot():
+    print("loot")
 
 
 def occupied(w, h, entities):

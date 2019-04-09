@@ -38,7 +38,10 @@ commands = {
     94: Action("move", (1, 0)),    # KP_6
     95: Action("move", (-1, -1)),  # KP_7
     96: Action("move", (0, -1)),   # KP_8
-    97: Action("move", (1, -1))    # KP_9
+    97: Action("move", (1, -1)),   # KP_9
+
+    98: Action("interact"),        # KP_0
+    99: Action("loot")             # KP_PERIOD
 }
 
 '''
