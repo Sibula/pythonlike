@@ -33,17 +33,17 @@ class Tile:
 
 # Map tiles
 class Empty(Tile):
-    def __init__(self, char=chr(32), color=tcod.black, transparent=False, walkable=False):
+    def __init__(self, char=" ", color=tcod.black, transparent=False, walkable=False):
         super().__init__(char, color, transparent, walkable)
 
 
 class Floor(Tile):
-    def __init__(self, char=chr(46), color=tcod.white, transparent=True, walkable=True):
+    def __init__(self, char=".", color=tcod.white, transparent=True, walkable=True):
         super().__init__(char, color, transparent, walkable)
 
 
 class Wall(Tile):
-    def __init__(self, char=chr(35), color=tcod.white, transparent=False, walkable=False):
+    def __init__(self, char="#", color=tcod.white, transparent=False, walkable=False):
         super().__init__(char, color, transparent, walkable)
 
 
