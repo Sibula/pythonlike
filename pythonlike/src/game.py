@@ -9,7 +9,6 @@ def process_step(game_map, entities):
 
 
 def _update(game_map, entities, action):
-    """Update game_map and entities according to player action."""
     # If the player closes the window raise SystemExit.
     if action.name == "quit":
         raise SystemExit()
@@ -43,7 +42,6 @@ def _move(game_map, entities, action):
         player.w, player.h = nw, nh
         pass
     elif occupied(nw, nh, entities):
-        print("You attack the {}".format(get_entity(nw, nh, entities).name))
         attack(index, get_entity_index(nw, nh, entities), entities)
 
 
