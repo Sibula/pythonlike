@@ -6,15 +6,9 @@ def attack(attacker_i, defender_i, entities):
     defender = entities[defender_i]
 
     # Calculate values
-    # TODO: Implement equipment and add them to the calculations
-    # TODO: Limit maximum values for accuracy, armor, and resistance
-    # Hit chance = (base accuracy * weapon modifier) * size modifier
-    hit_chance = attacker.accuracy * defender.size
-    # Bypass armor chance = (base accuracy * weapon modifier) / armor rating (chance to hit armor)
-    bypass_armor_chance = attacker.accuracy * (1 - defender.armor)
-    # Damage = (base damage * weapon modifier) / base resistance (for each damage type)
-    damage_normal = attacker.damage * (1 - defender.resistance)
-    # Damage on armor = (base damage * weapon modifier) / (base resistance + armor resistance) (for each damage type)
+    hit_chance = attacker.accuracy * (1 - defender.evasion)
+    bypass_armor_chance = 1 - defender.armor
+    damage_normal = attacker.damage
     damage_armor = attacker.damage * (1 - defender.resistance)
 
     # Calculate result from values
@@ -28,7 +22,7 @@ def attack(attacker_i, defender_i, entities):
             damage = damage_armor
         else:
             damage = damage_normal
-        entities[defender_i].hp -= damage
+        entities[defender_i].take_damage(damage)
         if defender.hp < 1:
             kill = True
 

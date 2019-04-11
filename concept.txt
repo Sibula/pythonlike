@@ -1,0 +1,22 @@
+Entity size related to base evasion:
+size	<0.5m / <3kg	0.5-1.2m / 3-25kg	1.2-2.4m / 25-200kg	>2.4m / >200kg
+base_ev	40%		30%			20%			10%
+name	tiny		small			medium			large
+
+Entity attributes:
+base evasion		smaller/faster entities have more (0: cannot evade, 1: always evades)
+base hp			bigger and tougher enemies have more
+base energy		
+base armor		coverage of natural armor (shell etc.) (0: no armor, 1: fully covered by armor)
+base armor resist	resistances of natural armor per damage type (0: doesn't resist, 1: fully resists)
+base accuracy		smaller/faster entities have more (0: cannot hit anything, 1: always hits a target with no evasion)
+level			
+
+strength		physical damage, carry limit, range of ranged weapons
+dexterity		evasion, accuracy
+intelligence		magical damage, ?
+constitution		hp, energy, hp regen, energy regen
+
+
+
+HP and NRG regen when staying still

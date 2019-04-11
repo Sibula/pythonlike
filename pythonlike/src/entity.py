@@ -2,72 +2,121 @@ import tcod
 
 
 class Entity:
-    def __init__(self, w, h, name, char, color, size, hp, damage, armor, resistance, accuracy, equipment={}):
+    def __init__(self, w, h, name, char, color, b_armor, b_armor_res, attributes, equipment={}):
         self.w = w
         self.h = h
         self.name = name
         self.char = char
         self.color = color
-        # tiny (<0.5m / <3kg), small (0.5-1.2m / 3-25kg), medium (1.2-2.4m / 25-200kg), large (>2.4m / >200kg)
-        # acc   0.6x                     0.8x                          1x                        1.2x
-        # enum    0                         1                           2                         3
-        self.size = size
-        self.hp = hp  # (how to handle max hp?) (calculate from base stats + modifier?)
-        self.damage = damage
-        self.armor = armor
-        self.resistance = resistance
-        self.accuracy = accuracy  # Likely removed in favour of other stats determining accuracy with various weapons
+
+        self.constitution = attributes[0]
+        self.strength = attributes[1]
+        self.dexterity = attributes[2]
+        self.intelligence = attributes[3]
+
+        self.hp = self.max_hp
+        self.b_armor = b_armor
+        self.b_armor_res = b_armor_res
+
         self.equipment = equipment
-        # base stats like STR, INT, etc?
+
+    @property
+    def evasion(self):
+        b_evasion = self.dexterity ** 0.7 / 20
+        # TODO: Add equipment stats
+        return b_evasion
+
+    @property
+    def accuracy(self):
+        b_accuracy = self.dexterity ** 0.75 / 10
+        # TODO: Add equipment stats
+        return b_accuracy
+
+    @property
+    def max_hp(self):
+        b_max_hp = round(1 + 0.09 * self.constitution ** 2)
+        # TODO: Add equipment stats
+        return b_max_hp
+
+    @property
+    def damage(self):
+        b_damage = round(self.strength ** 0.8)
+        # TODO: Add equipment stats
+        return b_damage
+
+    @property
+    def armor(self):
+        b_armor = self.b_armor
+        # TODO: Add equipment stats
+        return b_armor
+
+    @property
+    def resistance(self):
+        b_armor_res = self.b_armor_res
+        # TODO: Add equipment stats
+        return b_armor_res
+
+    def take_damage(self, damage):
+        self.hp -= damage
+        if self.hp <= 0:
+            self.dead()
+
+    def heal(self, amount):
+        self.hp += amount
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
+
+    def dead(self):
+        pass
 
 
 # Entities
 class Player(Entity):
     def __init__(self, w, h, name="player", char="@", color=tcod.yellow,
-                 size=1, hp=10, damage=2, armor=0, resistance=0, accuracy=0.7, equipment={}):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy, equipment)
+                 b_armor=0, b_armor_res=0, attributes=(10, 10, 10, 10), equipment={}):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Bat(Entity):
     def __init__(self, w, h, name="bat", char="b", color=tcod.dark_amber,
-                 size=0.6, hp=2, damage=1, armor=0, resistance=0, accuracy=0.9):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy)
+                 b_armor=0, b_armor_res=0, attributes=(2, 2, 20, 1)):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class GiantBat(Entity):
     def __init__(self, w, h, name="giant bat", char="b", color=tcod.red,
-                 size=0.6, hp=4, damage=2, armor=0, resistance=0, accuracy=0.9):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy)
+                 b_armor=0, b_armor_res=0, attributes=(3, 3, 19, 1)):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class Rat(Entity):
     def __init__(self, w, h, name="rat", char="r", color=tcod.dark_amber,
-                 size=0.6, hp=3, damage=1, armor=0, resistance=0, accuracy=0.85):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy)
+                 b_armor=0, b_armor_res=0, attributes=(3, 3, 18, 1)):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class GiantRat(Entity):
     def __init__(self, w, h, name="giant rat", char="r", color=tcod.red,
-                 size=0.6, hp=6, damage=2, armor=0, resistance=0, accuracy=0.85):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy)
+                 b_armor=0, b_armor_res=0, attributes=(5, 4, 17, 1)):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class Goblin(Entity):
     def __init__(self, w, h, name="goblin", char="o", color=tcod.dark_amber,
-                 size=0.8, hp=8, damage=2, armor=0, resistance=0, accuracy=0.7, equipment={}):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy, equipment)
+                 b_armor=0, b_armor_res=0, attributes=(7, 7, 15, 3), equipment={}):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Hobgoblin(Entity):
     def __init__(self, w, h, name="hobgoblin", char="o", color=tcod.red,
-                 size=0.8, hp=12, damage=3, armor=0, resistance=0, accuracy=0.7, equipment={}):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy, equipment)
+                 b_armor=0, b_armor_res=0, attributes=(9, 9, 8, 3), equipment={}):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Orc(Entity):
     def __init__(self, w, h, name="orc", char="o", color=tcod.dark_yellow,
-                 size=0.8, hp=16, damage=4, armor=0, resistance=0, accuracy=0.7, equipment={}):
-        super().__init__(w, h, name, char, color, size, hp, damage, armor, resistance, accuracy, equipment)
+                 b_armor=0, b_armor_res=0, attributes=(12, 12, 8, 3), equipment={}):
+        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 def init_entities(game_map):
