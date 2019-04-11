@@ -8,65 +8,56 @@ class Entity:
         self.name = name
         self.char = char
         self.color = color
-
         self.constitution = attributes[0]
         self.strength = attributes[1]
         self.dexterity = attributes[2]
         self.intelligence = attributes[3]
-
         self.hp = self.max_hp
         self.b_armor = b_armor
         self.b_armor_res = b_armor_res
-
         self.equipment = equipment
 
     @property
     def evasion(self):
         b_evasion = self.dexterity ** 0.7 / 20
-        # TODO: Add equipment stats
         return b_evasion
 
     @property
     def accuracy(self):
         b_accuracy = self.dexterity ** 0.75 / 10
-        # TODO: Add equipment stats
         return b_accuracy
 
     @property
     def max_hp(self):
         b_max_hp = round(1 + 0.09 * self.constitution ** 2)
-        # TODO: Add equipment stats
         return b_max_hp
 
     @property
     def damage(self):
         b_damage = round(self.strength ** 0.8)
-        # TODO: Add equipment stats
         return b_damage
 
     @property
     def armor(self):
         b_armor = self.b_armor
-        # TODO: Add equipment stats
         return b_armor
 
     @property
     def resistance(self):
         b_armor_res = self.b_armor_res
-        # TODO: Add equipment stats
         return b_armor_res
 
     def take_damage(self, damage):
         self.hp -= damage
         if self.hp <= 0:
-            self.dead()
+            self._dead()
 
     def heal(self, amount):
         self.hp += amount
         if self.hp > self.max_hp:
             self.hp = self.max_hp
 
-    def dead(self):
+    def _dead(self):
         pass
 
 
