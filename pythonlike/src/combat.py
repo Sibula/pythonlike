@@ -26,10 +26,12 @@ def attack(attacker_i, defender_i, entities):
         if defender.hp < 1:
             kill = True
 
-    print(construct_message(defender.name, hit, damage, kill))
+    message = construct_message(defender.name, hit, damage, kill)
 
     if kill:
         entities.pop(defender_i)
+
+    return message
 
 
 def construct_message(defender_name, hit, damage, kill):

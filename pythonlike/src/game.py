@@ -3,34 +3,41 @@ from combat import attack
 from event_handler import handle_events
 
 
-def process_step(game_map, entities):
+def process_step(game_map, entities, message_log):
     action = handle_events()
-    _update(game_map, entities, action)
+    messages = _update(game_map, entities, action)
+    for msg in messages:
+        if msg:
+            message_log.append(msg)
+
+    return message_log
 
 
 def _update(game_map, entities, action):
+    messages = []
     # If the player closes the window raise SystemExit.
     if action.name == "quit":
         raise SystemExit()
     # If command was invalid do something.
     if action.name == "invalid":
-        _invalid(action.param)
+        messages.append(_invalid(action.param))
     else:
         # Update the game if the command was valid.
         if action.name == "move":
-            _move(game_map, entities, action)
+            messages.append(_move(game_map, entities, action))
         if action.name == "stay":
-            pass
+            messages.append(_stay())
         if action.name == "interact":
-            _interact()
+            messages.append(_interact())
         if action.name == "loot":
-            _loot()
+            messages.append(_loot())
 
         # At the end of checking actions process turns for other entities.
+    return messages
 
 
 def _invalid(param):
-    print("Invalid command: {}".format(param))
+    return None  # "Invalid command: {}".format(param)
 
 
 def _move(game_map, entities, action):
@@ -40,17 +47,21 @@ def _move(game_map, entities, action):
     nw, nh = player.w + dw, player.h + dh
     if game_map.is_walkable(nw, nh) and not occupied(nw, nh, entities):
         player.w, player.h = nw, nh
-        pass
+        return None
     elif occupied(nw, nh, entities):
-        attack(index, get_entity_index(nw, nh, entities), entities)
+        return attack(index, get_entity_index(nw, nh, entities), entities)
+
+
+def _stay():
+    return None
 
 
 def _interact():
-    print("interact")
+    return "interact"
 
 
 def _loot():
-    print("loot")
+    return "loot"
 
 
 def occupied(w, h, entities):
