@@ -26,11 +26,12 @@ class Tile:
 
 
 class Room:
-    def __init__(self, x_min, y_min, x_max, y_max):
+    def __init__(self, x_min, y_min, x_max, y_max, door):
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
         self.y_max = y_max
+        self.door = door
 
     @property
     def candidates(self):
@@ -71,6 +72,7 @@ def create_room(min_size, max_size, m_width, m_height, rooms, taken):
         y_min = random.randint(1, m_height - min_size - 1)
         x_max = random.randint(x_min + min_size, x_min + max_size)
         y_max = random.randint(y_min + min_size, y_min + max_size)
+        door = None
     else:
         prev = random.choice(rooms)
         start_tile = random.choice(prev.candidates)
@@ -81,24 +83,28 @@ def create_room(min_size, max_size, m_width, m_height, rooms, taken):
             x_min = random.randint(x_max - max_size + 1, x_max - min_size + 1)
             y_min = random.randint(start_tile[1] - max_size + 1, start_tile[1])
             y_max = random.randint(y_min + min_size, y_min + max_size)
+            door = (start_tile[0] + 1, start_tile[1])
         elif direction == "right":
             x_min = prev.x_max + 2
             x_max = random.randint(x_min + min_size - 1, x_min + max_size - 1)
             y_min = random.randint(start_tile[1] - max_size + 1, start_tile[1])
             y_max = random.randint(y_min + min_size, y_min + max_size)
+            door = (start_tile[0] - 1, start_tile[1])
         elif direction == "up":
             y_max = prev.y_min - 2
             y_min = random.randint(y_max - max_size + 1, y_max - min_size + 1)
             x_min = random.randint(start_tile[0] - max_size + 1, start_tile[0])
             x_max = random.randint(x_min + min_size, x_min + max_size)
+            door = (start_tile[0], start_tile[1] + 1)
         else:  # direction == "down"
             y_min = prev.y_max + 2
             y_max = random.randint(y_min + min_size - 1, y_min + max_size - 1)
             x_min = random.randint(start_tile[0] - max_size + 1, start_tile[0])
             x_max = random.randint(x_min + min_size, x_min + max_size)
+            door = (start_tile[0], start_tile[1] - 1)
 
-    room = Room(x_min, y_min, x_max, y_max)
-    proper = check(room, min_size, max_size, m_width, m_height, rooms, start_tile, taken)
+    room = Room(x_min, y_min, x_max, y_max, door)
+    proper = check(room, min_size, m_width, m_height, start_tile, taken)
     if proper:
         rooms.append(room)
         for (x, y) in np.ndindex(taken.shape):
@@ -119,7 +125,7 @@ def check_dir(start_tile, room):
         return "down"
 
 
-def check(room, min_size, max_size, m_width, m_height, rooms, start_tile, taken):
+def check(room, min_size, m_width, m_height, start_tile, taken):
     # Fit inside map
     while room.x_min < 1 or room.y_min < 1 or room.x_max > m_width - 2 or room.y_max > m_height - 2:
         if room.x_min < 1:
@@ -158,6 +164,9 @@ def tile_map(tiles, rooms):
             for y in range(room.y_min - 1, room.y_max + 2):
                 if x == room.x_min - 1 or x == room.x_max + 1 or y == room.y_min - 1 or y == room.y_max + 1:
                     tiles[x, y] = Wall()
+    for room in rooms:
+        if room.door:
+            tiles[room.door[0], room.door[1]] = Door()
 
     return tiles
 
