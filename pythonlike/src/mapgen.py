@@ -34,20 +34,20 @@ def generate_map(m_width, m_height):
     min_size = 3
     max_size = 15
     tiles = np.full((m_width, m_height), Empty())  # Initialize empty map.
-    rooms = []
-    taken = np.zeros_like(tiles, dtype=int)
-    taken_ratio = 0
+    rooms = []  # List to store generated rooms in.
+    taken = np.zeros_like(tiles, dtype=int)  # Empty array to store whether a tile belongs to a room.
+    taken_ratio = 0  # Ratio of map filled with rooms.
     while taken_ratio < 0.75:
-        create_room(min_size, max_size, m_width, m_height, rooms, taken)
+        _create_room(min_size, max_size, m_width, m_height, rooms, taken)
         taken_bincount = np.bincount(taken.flatten(), minlength=2)
         taken_ratio = taken_bincount[1] / (taken_bincount[0] + taken_bincount[1])
 
-    return tile_map(tiles, rooms)
+    return _tile_map(tiles, rooms)
 
 
-def create_room(min_size, max_size, m_width, m_height, rooms, taken):
+def _create_room(min_size, max_size, m_width, m_height, rooms, taken):
     if not rooms:
-        prev = None
+        # Parameters for first room.
         start_tile = None
         x_min = random.randint(1, m_width - min_size - 1)
         y_min = random.randint(1, m_height - min_size - 1)
@@ -55,10 +55,11 @@ def create_room(min_size, max_size, m_width, m_height, rooms, taken):
         y_max = random.randint(y_min + min_size, y_min + max_size)
         door = None
     else:
+        # Choose a tile next to an existing room to grow from.
         prev = random.choice(rooms)
         start_tile = random.choice(prev.candidates)
-        print("start tile: {}".format(start_tile))
-        direction = check_dir(start_tile, prev)
+        direction = _check_dir(start_tile, prev)
+        # Set parameters depending on direction relative to parent room
         if direction == "left":
             x_max = prev.x_min - 2
             x_min = random.randint(x_max - max_size + 1, x_max - min_size + 1)
@@ -85,16 +86,17 @@ def create_room(min_size, max_size, m_width, m_height, rooms, taken):
             door = (start_tile[0], start_tile[1] - 1)
 
     room = Room(x_min, y_min, x_max, y_max, door)
-    proper = check(room, min_size, m_width, m_height, start_tile, taken)
+    # Check if the room passes all conditions.
+    proper = _check(room, min_size, m_width, m_height, start_tile, taken)
     if proper:
         rooms.append(room)
         for (x, y) in np.ndindex(taken.shape):
             if room.contains(x, y):
                 taken[x, y] = 1
-        print("({}, {}) ({}, {})".format(rooms[-1].x_min, rooms[-1].y_min, rooms[-1].x_max, rooms[-1].y_max))
 
 
-def check_dir(start_tile, room):
+def _check_dir(start_tile, room):
+    # Check which direction the new room should grow.
     x, y = start_tile
     if x < room.x_min:
         return "left"
@@ -106,7 +108,7 @@ def check_dir(start_tile, room):
         return "down"
 
 
-def check(room, min_size, m_width, m_height, start_tile, taken):
+def _check(room, min_size, m_width, m_height, start_tile, taken):
     # Fit inside map
     while room.x_min < 1 or room.y_min < 1 or room.x_max > m_width - 2 or room.y_max > m_height - 2:
         if room.x_min < 1:
@@ -136,7 +138,8 @@ def check(room, min_size, m_width, m_height, start_tile, taken):
     return True
 
 
-def tile_map(tiles, rooms):
+def _tile_map(tiles, rooms):
+    # Add the rooms themselves (wall/floor).
     for room in rooms:
         for x in range(room.x_min, room.x_max + 1):
             for y in range(room.y_min, room.y_max + 1):
@@ -145,6 +148,7 @@ def tile_map(tiles, rooms):
             for y in range(room.y_min - 1, room.y_max + 2):
                 if x == room.x_min - 1 or x == room.x_max + 1 or y == room.y_min - 1 or y == room.y_max + 1:
                     tiles[x, y] = Wall()
+    # Add doors.
     for room in rooms:
         if room.door:
             tiles[room.door[0], room.door[1]] = Door()

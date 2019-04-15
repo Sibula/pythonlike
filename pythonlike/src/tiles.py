@@ -26,7 +26,7 @@ class Wall(Tile):
 
 
 class Door(Tile):
-    def __init__(self, char="+", color=tcod.white, transparent=False, walkable=False):
+    def __init__(self, char="+", color=tcod.dark_amber, transparent=False, walkable=False):
         super().__init__(char, color, transparent, walkable)
 
     def toggle(self):

@@ -33,6 +33,5 @@ def _render_log(log, message_log):
         log.print(1, i + 1, msg)
 
 
-
 def _render_info(info):
     info.draw_frame(0, 0, 20, 55, "Info")

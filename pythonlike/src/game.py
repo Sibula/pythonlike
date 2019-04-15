@@ -1,6 +1,7 @@
 import entity
 from combat import attack
 from event_handler import handle_events
+from tiles import *
 
 
 def process_step(game_map, entities, message_log):
@@ -50,6 +51,8 @@ def _move(game_map, entities, action):
         return None
     elif occupied(nw, nh, entities):
         return attack(index, get_entity_index(nw, nh, entities), entities)
+    elif type(game_map.tiles[nw, nh]) == Door:
+        game_map.tiles[nw, nh].toggle()
 
 
 def _stay():
