@@ -53,13 +53,14 @@ def generate_map(m_width, m_height):
     max_size = 15
     tiles = np.full((m_width, m_height), Empty())  # Initialize empty map.
     rooms = []
+    taken = np.zeros_like(tiles)
     for _ in range(10):
-        create_room(min_size, max_size, m_width, m_height, rooms)
+        create_room(min_size, max_size, m_width, m_height, rooms, taken)
 
     return tile_map(tiles, rooms)
 
 
-def create_room(min_size, max_size, m_width, m_height, rooms):
+def create_room(min_size, max_size, m_width, m_height, rooms, taken):
     if not rooms:
         prev = None
         start_tile = None
@@ -94,12 +95,14 @@ def create_room(min_size, max_size, m_width, m_height, rooms):
             x_max = random.randint(x_min + min_size, x_min + max_size)
 
     room = Room(x_min, y_min, x_max, y_max)
-    proper = check(room, min_size, max_size, m_width, m_height, rooms, start_tile)
+    proper = check(room, min_size, max_size, m_width, m_height, rooms, start_tile, taken)
     if not proper:
-        return create_room(min_size, max_size, m_width, m_height, rooms)
-
+        return create_room(min_size, max_size, m_width, m_height, rooms, taken)
     else:
         rooms.append(room)
+        for (x, y) in np.ndindex(taken.shape):
+            if room.contains(x, y):
+                taken[x, y] = 1
         print("({}, {}) ({}, {})".format(rooms[-1].x_min, rooms[-1].y_min, rooms[-1].x_max, rooms[-1].y_max))
 
 
@@ -115,7 +118,7 @@ def check_dir(start_tile, room):
         return "down"
 
 
-def check(room, min_size, max_size, m_width, m_height, rooms, start_tile):
+def check(room, min_size, max_size, m_width, m_height, rooms, start_tile, taken):
     # Fit inside map
     while room.x_min < 1 or room.y_min < 1 or room.x_max > m_width - 2 or room.y_max > m_height - 2:
         if room.x_min < 1:
@@ -127,15 +130,10 @@ def check(room, min_size, max_size, m_width, m_height, rooms, start_tile):
         if room.y_max > m_height - 2:
             room.y_max -= 1
 
-    # Fit with previous rooms
-    fits = False
-    while not fits:
-        fits = True
-        for other in rooms:
-            if other.contains(room.x_min, room.y_min) or other.contains(room.x_min, room.y_max) \
-                    or other.contains(room.x_max, room.y_min) or other.contains(room.x_max, room.y_max):
-                print("intersection!")  # Fix it
-                fits = False
+    # Check if it overlaps with existing rooms
+    for x in range(room.x_min, room.x_max + 1):
+        for y in range(room.y_min, room.y_max + 1):
+            if taken[x, y]:
                 return False
 
     # Check if the starting coordinates are inside the room
