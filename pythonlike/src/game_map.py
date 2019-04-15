@@ -11,5 +11,5 @@ class GameMap:
         self.tcod_map = tcod.map.Map(w, h)
         self.explored = np.zeros_like(self.tiles)
 
-    def is_walkable(self, w, h):
-        return self.tiles[w, h].walkable
+    def is_walkable(self, x, y):
+        return self.tiles[x, y].walkable

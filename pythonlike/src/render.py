@@ -18,13 +18,13 @@ def render(root, game, log, info, game_map, entities, message_log):
 
 
 def _render_map(game, game_map):
-    for (w, h), tile in np.ndenumerate(game_map.tiles):
-        game.print(w, h, tile.char, tile.color)
+    for (x, y), tile in np.ndenumerate(game_map.tiles):
+        game.print(x, y, tile.char, tile.color)
 
 
 def _render_entities(game, entities):
     for entity in entities:
-        game.print(entity.w, entity.h, entity.char, entity.color)
+        game.print(entity.x, entity.y, entity.char, entity.color)
 
 
 def _render_log(log, message_log):
