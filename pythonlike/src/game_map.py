@@ -44,42 +44,100 @@ class Room:
 
         return candidates
 
+    def contains(self, x, y):
+        return self.x_min - 1 <= x <= self.x_max + 1 and self.y_min - 1 <= y <= self.y_max + 1
+
 
 def generate_map(m_width, m_height):
     min_size = 3
     max_size = 15
     tiles = np.full((m_width, m_height), Empty())  # Initialize empty map.
-    rooms = [create_room(min_size, max_size, m_width, m_height, [])]  # Create first room.
-    for _ in range(5):
-        expandable = random.choice(rooms)
-        start_tile = random.choice(expandable.candidates)
-        direction = check_dir(start_tile[0], start_tile[1], expandable)
-        print(start_tile, direction)
+    rooms = []
+    for _ in range(10):
+        create_room(min_size, max_size, m_width, m_height, rooms)
 
     return tile_map(tiles, rooms)
 
 
 def create_room(min_size, max_size, m_width, m_height, rooms):
-    # Bounds for the top-left coordinates.
-    x_min, y_min = 1, 1
-    x_max, y_max = m_width - min_size - 1, m_height - min_size - 1
+    if not rooms:
+        x_min = random.randint(1, m_width - min_size - 1)
+        y_min = random.randint(1, m_height - min_size - 1)
+        x_max = random.randint(x_min + min_size, x_min + max_size)
+        y_max = random.randint(y_min + min_size, y_min + max_size)
+    else:
+        prev = random.choice(rooms)
+        start_tile = random.choice(prev.candidates)
+        print("start tile: {}".format(start_tile))
+        direction = check_dir(start_tile, prev)
+        if direction == "left":
+            x_max = prev.x_min - 2
+            x_min = random.randint(x_max - max_size + 1, x_max - min_size + 1)
+            y_min = random.randint(start_tile[1] - max_size + 1, start_tile[1])
+            y_max = random.randint(y_min + min_size, y_min + max_size)
+        elif direction == "right":
+            x_min = prev.x_max + 2
+            x_max = random.randint(x_min + min_size - 1, x_min + max_size - 1)
+            y_min = random.randint(start_tile[1] - max_size + 1, start_tile[1])
+            y_max = random.randint(y_min + min_size, y_min + max_size)
+        elif direction == "up":
+            y_max = prev.y_min - 2
+            y_min = random.randint(y_max - max_size + 1, y_max - min_size + 1)
+            x_min = random.randint(start_tile[0] - max_size + 1, start_tile[0])
+            x_max = random.randint(x_min + min_size, x_min + max_size)
+        else:  # direction == "down"
+            y_min = prev.y_max + 2
+            y_max = random.randint(y_min + min_size - 1, y_min + max_size - 1)
+            x_min = random.randint(start_tile[0] - max_size + 1, start_tile[0])
+            x_max = random.randint(x_min + min_size, x_min + max_size)
 
-    # Randomize room position and size.
-    x_min = random.randint(x_min, x_max)
-    y_min = random.randint(y_min, y_max)
-    x_max = random.randint(x_min + min_size, x_min + max_size)
-    y_max = random.randint(y_min + min_size, y_min + max_size)
+    room = fit(x_min, y_min, x_max, y_max, m_width, m_height, rooms)
+    if not room:
+        return create_room(min_size, max_size, m_width, m_height, rooms)
 
-    # Make the room smaller if it doesn't fit.
-    while x_max > m_width - 2 or y_max > m_height - 2:
+    # Retry if the room is below minimum size.
+    if room.x_max - room.x_min < min_size or room.y_max - room.y_min < min_size:
+        return create_room(min_size, max_size, m_width, m_height, rooms)
+    else:
+        rooms.append(room)
+        print("({}, {}) ({}, {})".format(rooms[-1].x_min, rooms[-1].y_min, rooms[-1].x_max, rooms[-1].y_max))
+
+
+def check_dir(start_tile, room):
+    x, y = start_tile
+    if x < room.x_min:
+        return "left"
+    if x > room.x_max:
+        return "right"
+    if y < room.y_min:
+        return "up"
+    if y > room.y_max:
+        return  "down"
+
+
+def fit(x_min, y_min, x_max, y_max, m_width, m_height, rooms):
+    # Fit inside map
+    while x_min < 1 or y_min < 1 or x_max > m_width - 2 or y_max > m_height - 2:
+        if x_min < 1:
+            x_min += 1
+        if y_min < 1:
+            y_min += 1
         if x_max > m_width - 2:
             x_max -= 1
         if y_max > m_height - 2:
             y_max -= 1
-    
-    # Retry if the room is below minimum size.
-    if x_max - x_min < min_size or y_max - y_min < min_size:
-        return create_room(min_size, max_size, m_width, m_height, rooms)
+
+    # Fit with previous rooms
+    fits = False
+    while not fits:
+        fits = True
+        for room in rooms:
+            if room.contains(x_min, y_min) or room.contains(x_min, y_max) \
+                    or room.contains(x_max, y_min) or room.contains(x_max, y_max):
+                print("intersection!")  # Fix it
+                fits = False
+                return False
+        fits = True
 
     return Room(x_min, y_min, x_max, y_max)
 
@@ -95,27 +153,6 @@ def tile_map(tiles, rooms):
                     tiles[x, y] = Wall()
 
     return tiles
-
-
-def check_free(x, y, rooms, m_width, m_height):
-    free = True
-    if 0 <= x < m_width and 0 <= y > m_height:
-        for room in rooms:
-            if room.x_min <= x <= room.x_max and room.y_min <= y <= room.y_max:
-                free = False
-
-    return free
-
-
-def check_dir(x, y, room):
-    if x < room.x_min:
-        return "left"
-    if x > room.x_max:
-        return "right"
-    if y < room.y_min:
-        return "up"
-    if y > room.y_max:
-        return  "down"
 
 
 # Map tiles
