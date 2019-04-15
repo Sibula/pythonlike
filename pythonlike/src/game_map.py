@@ -61,6 +61,8 @@ def generate_map(m_width, m_height):
 
 def create_room(min_size, max_size, m_width, m_height, rooms):
     if not rooms:
+        prev = None
+        start_tile = None
         x_min = random.randint(1, m_width - min_size - 1)
         y_min = random.randint(1, m_height - min_size - 1)
         x_max = random.randint(x_min + min_size, x_min + max_size)
@@ -91,13 +93,11 @@ def create_room(min_size, max_size, m_width, m_height, rooms):
             x_min = random.randint(start_tile[0] - max_size + 1, start_tile[0])
             x_max = random.randint(x_min + min_size, x_min + max_size)
 
-    room = fit(x_min, y_min, x_max, y_max, m_width, m_height, rooms)
-    if not room:
+    room = Room(x_min, y_min, x_max, y_max)
+    proper = check(room, min_size, max_size, m_width, m_height, rooms, start_tile)
+    if not proper:
         return create_room(min_size, max_size, m_width, m_height, rooms)
 
-    # Retry if the room is below minimum size.
-    if room.x_max - room.x_min < min_size or room.y_max - room.y_min < min_size:
-        return create_room(min_size, max_size, m_width, m_height, rooms)
     else:
         rooms.append(room)
         print("({}, {}) ({}, {})".format(rooms[-1].x_min, rooms[-1].y_min, rooms[-1].x_max, rooms[-1].y_max))
@@ -112,34 +112,42 @@ def check_dir(start_tile, room):
     if y < room.y_min:
         return "up"
     if y > room.y_max:
-        return  "down"
+        return "down"
 
 
-def fit(x_min, y_min, x_max, y_max, m_width, m_height, rooms):
+def check(room, min_size, max_size, m_width, m_height, rooms, start_tile):
     # Fit inside map
-    while x_min < 1 or y_min < 1 or x_max > m_width - 2 or y_max > m_height - 2:
-        if x_min < 1:
-            x_min += 1
-        if y_min < 1:
-            y_min += 1
-        if x_max > m_width - 2:
-            x_max -= 1
-        if y_max > m_height - 2:
-            y_max -= 1
+    while room.x_min < 1 or room.y_min < 1 or room.x_max > m_width - 2 or room.y_max > m_height - 2:
+        if room.x_min < 1:
+            room.x_min += 1
+        if room.y_min < 1:
+            room.y_min += 1
+        if room.x_max > m_width - 2:
+            room.x_max -= 1
+        if room.y_max > m_height - 2:
+            room.y_max -= 1
 
     # Fit with previous rooms
     fits = False
     while not fits:
         fits = True
-        for room in rooms:
-            if room.contains(x_min, y_min) or room.contains(x_min, y_max) \
-                    or room.contains(x_max, y_min) or room.contains(x_max, y_max):
+        for other in rooms:
+            if other.contains(room.x_min, room.y_min) or other.contains(room.x_min, room.y_max) \
+                    or other.contains(room.x_max, room.y_min) or other.contains(room.x_max, room.y_max):
                 print("intersection!")  # Fix it
                 fits = False
                 return False
-        fits = True
 
-    return Room(x_min, y_min, x_max, y_max)
+    # Check if the starting coordinates are inside the room
+    if start_tile:
+        if not room.contains(start_tile[0], start_tile[1]):
+            return False
+
+    # Check proper size
+    if room.x_max - room.x_min < min_size or room.y_max - room.y_min < min_size:
+        return False
+
+    return True
 
 
 def tile_map(tiles, rooms):
