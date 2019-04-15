@@ -1,9 +1,11 @@
+import random
 import tcod
+import numpy as np
 
 
 class Entity:
-    def __init__(self, w, h, name, char, color, b_armor, b_armor_res, attributes, equipment={}):
-        self.w = w
+    def __init__(self, x, h, name, char, color, b_armor, b_armor_res, attributes, equipment={}):
+        self.x = x
         self.h = h
         self.name = name
         self.char = char
@@ -63,55 +65,68 @@ class Entity:
 
 # Entities
 class Player(Entity):
-    def __init__(self, w, h, name="player", char="@", color=tcod.yellow,
+    def __init__(self, x, h, name="player", char="@", color=tcod.yellow,
                  b_armor=0, b_armor_res=0, attributes=(10, 10, 10, 10), equipment={}):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Bat(Entity):
-    def __init__(self, w, h, name="bat", char="b", color=tcod.dark_amber,
+    def __init__(self, x, h, name="bat", char="b", color=tcod.dark_amber,
                  b_armor=0, b_armor_res=0, attributes=(2, 2, 20, 1)):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class GiantBat(Entity):
-    def __init__(self, w, h, name="giant bat", char="b", color=tcod.red,
+    def __init__(self, x, h, name="giant bat", char="b", color=tcod.red,
                  b_armor=0, b_armor_res=0, attributes=(3, 3, 19, 1)):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class Rat(Entity):
-    def __init__(self, w, h, name="rat", char="r", color=tcod.dark_amber,
+    def __init__(self, x, h, name="rat", char="r", color=tcod.dark_amber,
                  b_armor=0, b_armor_res=0, attributes=(3, 3, 18, 1)):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class GiantRat(Entity):
-    def __init__(self, w, h, name="giant rat", char="r", color=tcod.red,
+    def __init__(self, x, h, name="giant rat", char="r", color=tcod.red,
                  b_armor=0, b_armor_res=0, attributes=(5, 4, 17, 1)):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class Goblin(Entity):
-    def __init__(self, w, h, name="goblin", char="o", color=tcod.dark_amber,
+    def __init__(self, x, h, name="goblin", char="o", color=tcod.dark_amber,
                  b_armor=0, b_armor_res=0, attributes=(7, 7, 15, 3), equipment={}):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Hobgoblin(Entity):
-    def __init__(self, w, h, name="hobgoblin", char="o", color=tcod.red,
+    def __init__(self, x, h, name="hobgoblin", char="o", color=tcod.red,
                  b_armor=0, b_armor_res=0, attributes=(9, 9, 8, 3), equipment={}):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Orc(Entity):
-    def __init__(self, w, h, name="orc", char="o", color=tcod.dark_yellow,
+    def __init__(self, x, h, name="orc", char="o", color=tcod.dark_yellow,
                  b_armor=0, b_armor_res=0, attributes=(12, 12, 8, 3), equipment={}):
-        super().__init__(w, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
+        super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 def init_entities(game_map):
     """Initialize entities list."""
-    entities = [Player(0, 0), Rat(4, 2), GiantRat(4, 4), Bat(6, 2), GiantBat(6, 4), Goblin(8, 2), Hobgoblin(8, 4),
-                Orc(8, 6)]
+    entities = [Player(0, 0), Rat(0, 0), GiantRat(0, 0), Bat(0, 0), GiantBat(0, 0),
+                Goblin(0, 0), Hobgoblin(0, 0), Orc(0, 0)]
+
+    walkable_tiles = []
+    for (x, y), tile in np.ndenumerate(game_map.tiles):
+        if tile.walkable:
+            walkable_tiles.append((x, y))
+    
+    for entity in entities:
+        tile = random.choice(walkable_tiles)
+        # print(tile)
+        entity.x = tile[0]
+        entity.y = tile[1]
+        walkable_tiles.remove(tile)
+
     return entities

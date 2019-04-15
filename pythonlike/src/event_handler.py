@@ -10,11 +10,11 @@ class Action:
 def handle_events():
     """Wait for user input and return an Action object."""
     while True:
-        for x in event.get():
-            if x.type == "QUIT":
+        for ev in event.get():
+            if ev.type == "QUIT":
                 return Action("quit")
-            elif x.type == "KEYDOWN":
-                return _handle_keydown(x.scancode, x.mod)
+            elif ev.type == "KEYDOWN":
+                return _handle_keydown(ev.scancode, ev.mod)
             else:
                 continue
 

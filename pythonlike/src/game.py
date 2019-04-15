@@ -1,6 +1,7 @@
 import entity
 from combat import attack
 from event_handler import handle_events
+from tiles import *
 
 
 def process_step(game_map, entities, message_log):
@@ -42,14 +43,16 @@ def _invalid(param):
 
 def _move(game_map, entities, action):
     player = get_player(entities)
-    index = get_entity_index(player.w, player.h, entities)
-    dw, dh = action.param
-    nw, nh = player.w + dw, player.h + dh
-    if game_map.is_walkable(nw, nh) and not occupied(nw, nh, entities):
-        player.w, player.h = nw, nh
+    index = get_entity_index(player.x, player.y, entities)
+    dx, dy = action.param
+    nx, ny = player.x + dx, player.y + dy
+    if game_map.is_walkable(nx, ny) and not occupied(nx, ny, entities):
+        player.x, player.y = nx, ny
         return None
-    elif occupied(nw, nh, entities):
-        return attack(index, get_entity_index(nw, nh, entities), entities)
+    elif occupied(nx, ny, entities):
+        return attack(index, get_entity_index(nx, ny, entities), entities)
+    elif type(game_map.tiles[nx, ny]) == Door:
+        game_map.tiles[nx, ny].toggle()
 
 
 def _stay():
@@ -64,27 +67,27 @@ def _loot():
     return "loot"
 
 
-def occupied(w, h, entities):
-    # Check if the tile at (w, h) is occupied by an entity.
+def occupied(x, y, entities):
+    # Check if the tile at (x, y) is occupied by an entity.
     has_entity = False
-    for ent_w, ent_h in [(ent.w, ent.h) for ent in entities]:
-        if (ent_w, ent_h) == (w, h):
+    for ent_x, ent_y in [(ent.x, ent.y) for ent in entities]:
+        if (ent_x, ent_y) == (x, y):
             has_entity = True
 
     return has_entity
 
 
-def get_entity(w, h, entities):
-    # Return entity at (w, h).
+def get_entity(x, y, entities):
+    # Return entity at (x, y).
     for ent in entities:
-        if (ent.w, ent.h) == (w, h):
+        if (ent.x, ent.y) == (x, y):
             return ent
 
 
-def get_entity_index(w, h, entities):
-    # Return index of entity at (w, h) in entities.
+def get_entity_index(x, y, entities):
+    # Return index of entity at (x, y) in entities.
     for i, ent in enumerate(entities):
-        if (ent.w, ent.h) == (w, h):
+        if (ent.x, ent.y) == (x, y):
             return i
     return None
 
