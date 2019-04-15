@@ -53,9 +53,12 @@ def generate_map(m_width, m_height):
     max_size = 15
     tiles = np.full((m_width, m_height), Empty())  # Initialize empty map.
     rooms = []
-    taken = np.zeros_like(tiles)
-    for _ in range(10):
+    taken = np.zeros_like(tiles, dtype=int)
+    taken_ratio = 0
+    while taken_ratio < 0.75:
         create_room(min_size, max_size, m_width, m_height, rooms, taken)
+        taken_bincount = np.bincount(taken.flatten(), minlength=2)
+        taken_ratio = taken_bincount[1] / (taken_bincount[0] + taken_bincount[1])
 
     return tile_map(tiles, rooms)
 
@@ -96,9 +99,7 @@ def create_room(min_size, max_size, m_width, m_height, rooms, taken):
 
     room = Room(x_min, y_min, x_max, y_max)
     proper = check(room, min_size, max_size, m_width, m_height, rooms, start_tile, taken)
-    if not proper:
-        return create_room(min_size, max_size, m_width, m_height, rooms, taken)
-    else:
+    if proper:
         rooms.append(room)
         for (x, y) in np.ndindex(taken.shape):
             if room.contains(x, y):
