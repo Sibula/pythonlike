@@ -124,7 +124,6 @@ def init_entities(game_map):
     
     for entity in entities:
         tile = random.choice(walkable_tiles)
-        # print(tile)
         entity.x = tile[0]
         entity.y = tile[1]
         walkable_tiles.remove(tile)

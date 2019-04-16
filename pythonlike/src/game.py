@@ -48,11 +48,10 @@ def _move(game_map, entities, action):
     nx, ny = player.x + dx, player.y + dy
     if game_map.is_walkable(nx, ny) and not occupied(nx, ny, entities):
         player.x, player.y = nx, ny
-        return None
     elif occupied(nx, ny, entities):
         return attack(index, get_entity_index(nx, ny, entities), entities)
     elif type(game_map.tiles[nx, ny]) == Door:
-        game_map.tiles[nx, ny].toggle()
+        game_map.tiles[nx, ny].interact()
 
 
 def _stay():
