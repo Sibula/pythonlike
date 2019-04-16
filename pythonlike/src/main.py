@@ -14,6 +14,7 @@ def initialize():
     log_width, log_height = 80, 15
     info_width, info_height = 20, 55
     map_width, map_height = game_width, game_height
+    tcod.sys_set_fps(20)
 
     # Initialize consoles
     tcod.console_set_custom_font("data/terminal12x12_gs_ro.png",

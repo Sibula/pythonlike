@@ -10,13 +10,11 @@ class Action:
 def handle_events():
     """Wait for user input and return an Action object."""
     while True:
-        for ev in event.get():
+        for ev in event.wait():
             if ev.type == "QUIT":
                 return Action("quit")
             elif ev.type == "KEYDOWN":
                 return _handle_keydown(ev.scancode, ev.mod)
-            else:
-                continue
 
 
 def _handle_keydown(key, mod):
@@ -42,6 +40,22 @@ commands = {
     98: Action("interact"),        # KP_0
     99: Action("loot")             # KP_PERIOD
 }
+
+# HJKLYUBN  VI move
+# .         VI stay
+# SPACE     VI interact
+# ,         VI loot
+# ENTER     VI confirm
+# BACKSPACE VI cancel
+# ESC       menu (save, quit, help, ...)
+# i         inventory (equip, unequip, use, drop, eat, ...)
+# a         aim
+# NUM_ENTER confirm
+# NUM_PLUS  cancel
+# f         interact with force
+# m         magic
+# x         exchange weapons (melee and ranged)
+# s         search for hidden things (traps, doors, ...)
 
 '''
 LSHIFT		1
