@@ -10,6 +10,8 @@ class Room:
         self.y_min = y_min
         self.y_max = y_max
         self.door = door
+        self.stairs_up = None
+        self.stairs_down = None
 
     @property
     def candidates(self):
@@ -41,6 +43,7 @@ def generate_map(m_width, m_height):
         _create_room(min_size, max_size, m_width, m_height, rooms, taken)
         taken_bincount = np.bincount(taken.flatten(), minlength=2)
         taken_ratio = taken_bincount[1] / (taken_bincount[0] + taken_bincount[1])
+    add_stairs(rooms)
 
     return _tile_map(tiles, rooms)
 
@@ -138,6 +141,16 @@ def _check(room, min_size, m_width, m_height, start_tile, taken):
     return True
 
 
+def add_stairs(rooms):
+    up_room, down_room = random.sample(rooms, 2)
+    up_x = random.randint(up_room.x_min, up_room.x_max)
+    up_y = random.randint(up_room.y_min, up_room.y_max)
+    down_x = random.randint(down_room.x_min, down_room.x_max)
+    down_y = random.randint(down_room.y_min, down_room.y_max)
+    up_room.stairs_up = (up_x, up_y)
+    down_room.stairs_down = (down_x, down_y)
+
+
 def _tile_map(tiles, rooms):
     # Add the rooms themselves (wall/floor).
     for room in rooms:
@@ -148,9 +161,14 @@ def _tile_map(tiles, rooms):
             for y in range(room.y_min - 1, room.y_max + 2):
                 if x == room.x_min - 1 or x == room.x_max + 1 or y == room.y_min - 1 or y == room.y_max + 1:
                     tiles[x, y] = Wall()
-    # Add doors.
+
+    # Add other features.
     for room in rooms:
         if room.door:
             tiles[room.door[0], room.door[1]] = Door()
+        if room.stairs_up:
+            tiles[room.stairs_up[0], room.stairs_up[1]] = StairsUp()
+        if room.stairs_down:
+            tiles[room.stairs_down[0], room.stairs_down[1]] = StairsDown()
 
     return tiles
