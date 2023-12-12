@@ -1,6 +1,5 @@
 from collections import deque
-import tcod
-from tcod import console
+from tcod import libtcodpy, console
 import entity
 from game_map import GameMap
 from render import render
@@ -14,15 +13,15 @@ def initialize():
     log_width, log_height = 80, 15
     info_width, info_height = 20, 55
     map_width, map_height = game_width, game_height
-    tcod.sys_set_fps(20)
+    libtcodpy.sys_set_fps(20)
 
     # Initialize consoles
-    tcod.console_set_custom_font("data/terminal12x12_gs_ro.png",
-                                 tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_ASCII_INROW)
-    root = tcod.console_init_root(root_width, root_height, "pythonlike", False, tcod.RENDERER_SDL2, "F")
-    game = tcod.console.Console(game_width, game_height, "F")
-    log = tcod.console.Console(log_width, log_height, "F")
-    info = tcod.console.Console(info_width, info_height, "F")
+    libtcodpy.console_set_custom_font("data/terminal12x12_gs_ro.png",
+                                 libtcodpy.FONT_TYPE_GRAYSCALE | libtcodpy.FONT_LAYOUT_ASCII_INROW)
+    root = libtcodpy.console_init_root(root_width, root_height, "pythonlike", False, libtcodpy.RENDERER_SDL2, "F")
+    game = console.Console(game_width, game_height, "F")
+    log = console.Console(log_width, log_height, "F")
+    info = console.Console(info_width, info_height, "F")
 
     # Initialize game objects
     game_map = GameMap(map_width, map_height)

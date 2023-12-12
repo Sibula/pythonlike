@@ -65,49 +65,49 @@ class Entity:
 
 # Entities
 class Player(Entity):
-    def __init__(self, x, h, name="player", char="@", color=tcod.yellow,
+    def __init__(self, x, h, name="player", char="@", color=(255, 255, 0),
                  b_armor=0, b_armor_res=0, attributes=(10, 10, 10, 10), equipment={}):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Bat(Entity):
-    def __init__(self, x, h, name="bat", char="b", color=tcod.dark_amber,
+    def __init__(self, x, h, name="bat", char="b", color=(191, 143, 0),
                  b_armor=0, b_armor_res=0, attributes=(2, 2, 20, 1)):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class GiantBat(Entity):
-    def __init__(self, x, h, name="giant bat", char="b", color=tcod.red,
+    def __init__(self, x, h, name="giant bat", char="b", color=(255, 0, 0),
                  b_armor=0, b_armor_res=0, attributes=(3, 3, 19, 1)):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class Rat(Entity):
-    def __init__(self, x, h, name="rat", char="r", color=tcod.dark_amber,
+    def __init__(self, x, h, name="rat", char="r", color=(191, 143, 0),
                  b_armor=0, b_armor_res=0, attributes=(3, 3, 18, 1)):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class GiantRat(Entity):
-    def __init__(self, x, h, name="giant rat", char="r", color=tcod.red,
+    def __init__(self, x, h, name="giant rat", char="r", color=(255, 0, 0),
                  b_armor=0, b_armor_res=0, attributes=(5, 4, 17, 1)):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes)
 
 
 class Goblin(Entity):
-    def __init__(self, x, h, name="goblin", char="o", color=tcod.dark_amber,
+    def __init__(self, x, h, name="goblin", char="o", color=(191, 143, 0),
                  b_armor=0, b_armor_res=0, attributes=(7, 7, 15, 3), equipment={}):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Hobgoblin(Entity):
-    def __init__(self, x, h, name="hobgoblin", char="o", color=tcod.red,
+    def __init__(self, x, h, name="hobgoblin", char="o", color=(255, 0, 0),
                  b_armor=0, b_armor_res=0, attributes=(9, 9, 8, 3), equipment={}):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
 
 class Orc(Entity):
-    def __init__(self, x, h, name="orc", char="o", color=tcod.dark_yellow,
+    def __init__(self, x, h, name="orc", char="o", color=(191, 191, 0),
                  b_armor=0, b_armor_res=0, attributes=(12, 12, 8, 3), equipment={}):
         super().__init__(x, h, name, char, color, b_armor, b_armor_res, attributes, equipment)
 
