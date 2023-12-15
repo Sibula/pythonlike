@@ -2,6 +2,7 @@ from collections import deque
 from pathlib import Path
 import time
 
+import numpy as np
 import tcod.console
 import tcod.context
 import tcod.event
@@ -9,7 +10,6 @@ import tcod.tileset
 
 import entity
 from game_map import GameMap
-from render import render
 from game import process_step
 
 
@@ -31,6 +31,31 @@ class Clock:
             pass
         self.drift_time = min(drift_time, desired_frame_time)
         self.last_time = time.perf_counter()
+
+
+def render(context: tcod.context.Context, root: tcod.console.Console,
+           game: tcod.console.Console, log: tcod.console.Console,
+           info: tcod.console.Console, game_map: GameMap,
+           entities: list[entity.Entity], message_log: deque):
+    """Render and draw everything."""
+    # Render all consoles.
+    for (x, y), tile in np.ndenumerate(game_map.tiles):
+        game.print(x, y, tile.char, tile.color)
+
+    for entity in entities:
+        game.print(entity.x, entity.y, entity.char, entity.color)
+
+    log.draw_frame(0, 0, 80, 15, "Game Log")
+    for i, msg in enumerate(message_log):
+        log.print(1, i + 1, msg)
+
+    info.draw_frame(0, 0, 20, 55, "Info")
+
+    # Blit all consoles to root and draw.
+    game.blit(root)
+    log.blit(root, 0, 40)
+    info.blit(root, 80, 0)
+    context.present(root)
 
 
 def main():
