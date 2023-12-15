@@ -1,7 +1,7 @@
 import entity
 from combat import attack
 from event_handler import handle_events
-from tiles import *
+import tile
 
 
 def process_step(game_map, entities, message_log):
@@ -46,13 +46,14 @@ def _move(game_map, entities, action):
     index = get_entity_index(player.x, player.y, entities)
     dx, dy = action.param
     nx, ny = player.x + dx, player.y + dy
-    if game_map.is_walkable(nx, ny) and not occupied(nx, ny, entities):
+    occupied = is_occupied(nx, ny, entities)
+    if game_map.is_walkable(nx, ny) and not occupied:
         player.x, player.y = nx, ny
-    elif occupied(nx, ny, entities):
+    elif occupied:
         return attack(index, get_entity_index(nx, ny, entities), entities)
-    elif type(game_map.tiles[nx, ny]) == Door:
-        game_map.tiles[nx, ny].interact()
-
+    elif type(game_map.tiles[nx, ny]) == tile.door:
+        # game_map.tiles[nx, ny].interact()
+        pass
 
 def _stay():
     return None
@@ -66,7 +67,7 @@ def _loot():
     return "loot"
 
 
-def occupied(x, y, entities):
+def is_occupied(x, y, entities):
     # Check if the tile at (x, y) is occupied by an entity.
     has_entity = False
     for ent_x, ent_y in [(ent.x, ent.y) for ent in entities]:

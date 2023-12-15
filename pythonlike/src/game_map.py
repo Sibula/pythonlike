@@ -1,4 +1,3 @@
-import tcod.map
 import numpy as np
 from mapgen import generate_map
 
@@ -8,8 +7,8 @@ class GameMap:
         self.w = w
         self.h = h
         self.tiles = generate_map(w, h)
-        self.tcod_map = tcod.map.Map(w, h)
         self.explored = np.zeros_like(self.tiles)
+        self.visible = np.zeros_like(self.tiles)
 
     def is_walkable(self, x, y):
-        return self.tiles[x, y].walkable
+        return self.tiles[x, y]["walkable"]

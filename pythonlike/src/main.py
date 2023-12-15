@@ -39,8 +39,9 @@ def render(context: tcod.context.Context, root: tcod.console.Console,
            entities: list[entity.Entity], message_log: deque):
     """Render and draw everything."""
     # Render all consoles.
-    for (x, y), tile in np.ndenumerate(game_map.tiles):
-        game.print(x, y, tile.char, tile.color)
+    for (x, y), t in np.ndenumerate(game_map.tiles):
+        # game.print(x, y, tile.char, tile.color)
+        game.rgba[x, y] = t["graphic"]
 
     for entity in entities:
         game.print(entity.x, entity.y, entity.char, entity.color)

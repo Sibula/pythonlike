@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from tiles import *
+import tile
 
 
 class Room:
@@ -35,7 +35,7 @@ class Room:
 def generate_map(m_width, m_height):
     min_size = 3
     max_size = 15
-    tiles = np.full((m_width, m_height), Empty())  # Initialize empty map.
+    tiles = np.full((m_width, m_height), tile.empty)  # Initialize empty map.
     rooms = []  # List to store generated rooms in.
     taken = np.zeros_like(tiles, dtype=int)  # Empty array to store whether a tile belongs to a room.
     taken_ratio = 0  # Ratio of map filled with rooms.
@@ -156,19 +156,19 @@ def _tile_map(tiles, rooms):
     for room in rooms:
         for x in range(room.x_min, room.x_max + 1):
             for y in range(room.y_min, room.y_max + 1):
-                tiles[x, y] = Floor()
+                tiles[x, y] = tile.floor
         for x in range(room.x_min - 1, room.x_max + 2):
             for y in range(room.y_min - 1, room.y_max + 2):
                 if x == room.x_min - 1 or x == room.x_max + 1 or y == room.y_min - 1 or y == room.y_max + 1:
-                    tiles[x, y] = Wall()
+                    tiles[x, y] = tile.wall
 
     # Add other features.
     for room in rooms:
         if room.door:
-            tiles[room.door[0], room.door[1]] = Door()
+            tiles[room.door[0], room.door[1]] = tile.door
         if room.stairs_up:
-            tiles[room.stairs_up[0], room.stairs_up[1]] = StairsUp()
+            tiles[room.stairs_up[0], room.stairs_up[1]] = tile.stairs_up
         if room.stairs_down:
-            tiles[room.stairs_down[0], room.stairs_down[1]] = StairsDown()
+            tiles[room.stairs_down[0], room.stairs_down[1]] = tile.stairs_down
 
     return tiles

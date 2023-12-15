@@ -1,5 +1,4 @@
 import random
-import tcod
 import numpy as np
 
 
@@ -118,14 +117,14 @@ def init_entities(game_map):
                 Goblin(0, 0), Hobgoblin(0, 0), Orc(0, 0)]
 
     walkable_tiles = []
-    for (x, y), tile in np.ndenumerate(game_map.tiles):
-        if tile.walkable:
+    for (x, y), t in np.ndenumerate(game_map.tiles):
+        if t["walkable"]:
             walkable_tiles.append((x, y))
     
     for entity in entities:
-        tile = random.choice(walkable_tiles)
-        entity.x = tile[0]
-        entity.y = tile[1]
-        walkable_tiles.remove(tile)
+        t = random.choice(walkable_tiles)
+        entity.x = t[0]
+        entity.y = t[1]
+        walkable_tiles.remove(t)
 
     return entities
