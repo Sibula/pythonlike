@@ -78,15 +78,15 @@ def main():
     log = tcod.console.Console(log_width, log_height, "F")
     info = tcod.console.Console(info_width, info_height, "F")
 
+    # Initialize game objects
+    game_map = GameMap(map_width, map_height)
+    entities = entity.init_entities(game_map)
+    message_log = deque((log_height - 2)*[], log_height - 2)
+    
+    clock = Clock()
+
     with tcod.context.new(console=root, tileset=tileset, 
                           title="pythonlike") as context:
-        clock = Clock()  # Used to limit framerate
-
-        # Initialize game objects
-        game_map = GameMap(map_width, map_height)
-        entities = entity.init_entities(game_map)
-        message_log = deque((log_height - 2)*[], log_height - 2)
-
         # Initial rendering of the map
         render(context, root, game, log, info, game_map, entities, message_log)
 
