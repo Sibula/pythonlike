@@ -1,8 +1,7 @@
-from tcod import libtcodpy
 import numpy as np
 
 
-def render(root, game, log, info, game_map, entities, message_log):
+def render(context, root, game, log, info, game_map, entities, message_log):
     """Render and draw everything."""
     # Render all consoles.
     _render_map(game, game_map)
@@ -14,7 +13,7 @@ def render(root, game, log, info, game_map, entities, message_log):
     game.blit(root)
     log.blit(root, 0, 40)
     info.blit(root, 80, 0)
-    libtcodpy.console_flush()
+    context.present(root)
 
 
 def _render_map(game, game_map):
