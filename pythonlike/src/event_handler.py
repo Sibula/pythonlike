@@ -2,7 +2,7 @@ from tcod import event
 
 
 class Action:
-    def __init__(self, name, param=None):
+    def __init__(self, name: str, param=None):
         self.name = name
         self.param = param
 
@@ -17,7 +17,7 @@ def handle_events():
                 return _handle_keydown(ev.scancode, ev.mod)
 
 
-def _handle_keydown(key, mod):
+def _handle_keydown(key: event.Scancode, mod: event.Modifier) -> Action:
     if key in commands:
         return commands[key]
     else:

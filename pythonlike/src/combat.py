@@ -1,7 +1,9 @@
 import random
 
+from entity import Entity
 
-def attack(attacker_i, defender_i, entities):
+
+def attack(attacker_i: int, defender_i: int, entities: list[Entity]) -> str:
     attacker = entities[attacker_i]
     defender = entities[defender_i]
 
@@ -34,7 +36,7 @@ def attack(attacker_i, defender_i, entities):
     return message
 
 
-def construct_message(defender_name, hit, damage, kill):
+def construct_message(defender_name: str, hit: bool, damage: int, kill: bool) -> str:
     if hit:
         message = "You hit the {} for {} damage.".format(defender_name, damage)
     else:
