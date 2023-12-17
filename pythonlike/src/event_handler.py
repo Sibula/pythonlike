@@ -1,4 +1,5 @@
 import tcod.event
+from tcod.event import KeySym
 
 
 class Action:
@@ -10,35 +11,38 @@ class Action:
 def handle_events():
     """Wait for user input and return an Action object."""
     while True:
-        for ev in tcod.event.wait():
-            if ev.type == "QUIT":
-                return Action("quit")
-            elif ev.type == "KEYDOWN":
-                return _handle_keydown(ev.scancode, ev.mod)
+        for event in tcod.event.wait():
+            # print(event)
+            match event:
+                case tcod.event.Quit():
+                    return Action("quit")
+                case tcod.event.KeyDown():
+                    return _handle_keydown(event)
 
 
-def _handle_keydown(key: tcod.event.Scancode, mod: tcod.event.Modifier) -> Action:
+def _handle_keydown(event: tcod.event.KeyDown) -> Action:
+    key = event.sym
+
     if key in commands:
         return commands[key]
     else:
-        return Action("invalid", (key, mod))
+        return Action("invalid", (key))
 
 
 commands = {
     # Movement
-    89: Action("move", (-1, 1)),   # KP_1
-    90: Action("move", (0, 1)),    # KP_2
-    91: Action("move", (1, 1)),    # KP_3
-    92: Action("move", (-1, 0)),   # KP_4
-    93: Action("stay"),            # KP_5 NUMLOCK ON
-    156: Action("stay"),           # KP_5 NUMLOCK OFF
-    94: Action("move", (1, 0)),    # KP_6
-    95: Action("move", (-1, -1)),  # KP_7
-    96: Action("move", (0, -1)),   # KP_8
-    97: Action("move", (1, -1)),   # KP_9
+    KeySym.KP_1: Action("move", (-1, 1)),
+    KeySym.KP_2: Action("move", (0, 1)),
+    KeySym.KP_3: Action("move", (1, 1)),
+    KeySym.KP_4: Action("move", (-1, 0)),
+    KeySym.KP_5: Action("stay"),
+    KeySym.KP_6: Action("move", (1, 0)),
+    KeySym.KP_7: Action("move", (-1, -1)),
+    KeySym.KP_8: Action("move", (0, -1)),
+    KeySym.KP_9: Action("move", (1, -1)),
 
-    98: Action("interact"),        # KP_0
-    99: Action("loot")             # KP_PERIOD
+    KeySym.KP_0: Action("interact"),
+    KeySym.KP_PERIOD: Action("loot"),
 }
 
 # HJKLYUBN  VI move
