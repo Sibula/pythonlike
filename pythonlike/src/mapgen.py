@@ -1,5 +1,8 @@
 import random
 import numpy as np
+
+import entity
+from game_map import GameMap
 import tile
 
 
@@ -45,7 +48,10 @@ def generate_map(m_width: int, m_height: int) -> np.ndarray:
         taken_ratio = taken_bincount[1] / (taken_bincount[0] + taken_bincount[1])
     add_stairs(rooms)
 
-    return _tile_map(tiles, rooms)
+    tiles = _tile_map(tiles, rooms)
+    entities = init_entities(tiles)
+
+    return GameMap(m_width, m_height, tiles=tiles, entities=entities)
 
 
 def _create_room(min_size: int, max_size: int, m_width: int, m_height: int, rooms: list[Room], 
@@ -175,3 +181,23 @@ def _tile_map(tiles: np.ndarray, rooms: list[Room]) -> np.ndarray:
             tiles[room.stairs_down[0], room.stairs_down[1]] = tile.stairs_down
 
     return tiles
+
+
+def init_entities(tiles: np.ndarray) -> list[entity.Entity]:
+    """Initialize entities list."""
+    entities = [entity.Player(0, 0), entity.Rat(0, 0), entity.GiantRat(0, 0), entity.Bat(0, 0), 
+                entity.GiantBat(0, 0), entity.Goblin(0, 0), entity.Hobgoblin(0, 0), 
+                entity.Orc(0, 0)]
+
+    walkable_tiles = []
+    for (x, y), t in np.ndenumerate(tiles):
+        if t["walkable"]:
+            walkable_tiles.append((x, y))
+    
+    for e in entities:
+        t = random.choice(walkable_tiles)
+        e.x = t[0]
+        e.y = t[1]
+        walkable_tiles.remove(t)
+
+    return entities

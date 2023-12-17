@@ -7,9 +7,9 @@ from game_map import GameMap
 import tile
 
 
-def process_step(game_map: GameMap, entities: list[entity.Entity], message_log: deque) -> deque:
+def process_step(game_map: GameMap, message_log: deque) -> deque:
     action = handle_events()
-    messages = _update(game_map, entities, action)
+    messages = _update(game_map, action)
     for msg in messages:
         if msg:
             message_log.append(msg)
@@ -17,7 +17,7 @@ def process_step(game_map: GameMap, entities: list[entity.Entity], message_log: 
     return message_log
 
 
-def _update(game_map: GameMap, entities: list[entity.Entity], action: Action) -> list[str]:
+def _update(game_map: GameMap, action: Action) -> list[str]:
     messages = []
     # If the player closes the window raise SystemExit.
     if action.name == "quit":
@@ -28,7 +28,7 @@ def _update(game_map: GameMap, entities: list[entity.Entity], action: Action) ->
     else:
         # Update the game if the command was valid.
         if action.name == "move":
-            messages.append(_move(game_map, entities, action))
+            messages.append(_move(game_map, action))
         if action.name == "stay":
             messages.append(_stay())
         if action.name == "interact":
@@ -44,7 +44,8 @@ def _invalid(param):
     return None  # "Invalid command: {}".format(param)
 
 
-def _move(game_map: GameMap, entities: list[entity.Entity], action: Action) -> str | None:
+def _move(game_map: GameMap, action: Action) -> str | None:
+    entities = game_map.entities
     player = get_player(entities)
     index = get_entity_index(player.x, player.y, entities)
     dx, dy = action.param

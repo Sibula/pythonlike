@@ -1,9 +1,3 @@
-import random
-import numpy as np
-
-from game_map import GameMap
-
-
 class Entity:
     def __init__(self, x: int, y: int, name: str, char: str, color, b_armor: float, 
                  b_armor_res: float, attributes: list[int], equipment: dict={}):
@@ -112,22 +106,3 @@ class Orc(Entity):
     def __init__(self, x, y, name="orc", char="o", color=(191, 191, 0),
                  b_armor=0, b_armor_res=0, attributes=(12, 12, 8, 3), equipment={}):
         super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes, equipment)
-
-
-def init_entities(game_map: GameMap) -> list[Entity]:
-    """Initialize entities list."""
-    entities = [Player(0, 0), Rat(0, 0), GiantRat(0, 0), Bat(0, 0), GiantBat(0, 0),
-                Goblin(0, 0), Hobgoblin(0, 0), Orc(0, 0)]
-
-    walkable_tiles = []
-    for (x, y), t in np.ndenumerate(game_map.tiles):
-        if t["walkable"]:
-            walkable_tiles.append((x, y))
-    
-    for entity in entities:
-        t = random.choice(walkable_tiles)
-        entity.x = t[0]
-        entity.y = t[1]
-        walkable_tiles.remove(t)
-
-    return entities

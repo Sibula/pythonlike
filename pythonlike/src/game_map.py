@@ -1,12 +1,13 @@
 import numpy as np
-from mapgen import generate_map
+from entity import Entity
 
 
 class GameMap:
-    def __init__(self, w: int, h: int):
+    def __init__(self, w: int, h: int, tiles: np.ndarray, entities: list[Entity]):
         self.w = w
         self.h = h
-        self.tiles = generate_map(w, h)
+        self.tiles = tiles
+        self.entities = entities
         self.explored = np.zeros_like(self.tiles)
         self.visible = np.zeros_like(self.tiles)
 

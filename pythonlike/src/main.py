@@ -8,9 +8,9 @@ import tcod.context
 import tcod.event
 import tcod.tileset
 
-import entity
 from game_map import GameMap
 from game import process_step
+from mapgen import generate_map
 
 
 class Clock:
@@ -33,17 +33,16 @@ class Clock:
         self.last_time = time.perf_counter()
 
 
-def render(context: tcod.context.Context, root: tcod.console.Console,
-           game: tcod.console.Console, log: tcod.console.Console,
-           info: tcod.console.Console, game_map: GameMap,
-           entities: list[entity.Entity], message_log: deque):
+def render(context: tcod.context.Context, root: tcod.console.Console, game: tcod.console.Console,
+           log: tcod.console.Console, info: tcod.console.Console, game_map: GameMap,
+           message_log: deque):
     """Render and draw everything."""
     # Render all consoles.
     for (x, y), t in np.ndenumerate(game_map.tiles):
         # game.print(x, y, tile.char, tile.color)
         game.rgba[x, y] = t["graphic"]
 
-    for entity in entities:
+    for entity in game_map.entities:
         game.print(entity.x, entity.y, entity.char, entity.color)
 
     log.draw_frame(0, 0, 80, 15, "Game Log")
@@ -80,8 +79,7 @@ def main():
     info = tcod.console.Console(info_width, info_height, "F")
 
     # Initialize game objects
-    game_map = GameMap(map_width, map_height)
-    entities = entity.init_entities(game_map)
+    game_map = generate_map(map_width, map_height)
     message_log = deque((log_height - 2)*[], log_height - 2)
     
     clock = Clock()
@@ -89,17 +87,17 @@ def main():
     with tcod.context.new(console=root, tileset=tileset, 
                           title="pythonlike") as context:
         # Initial rendering of the map
-        render(context, root, game, log, info, game_map, entities, message_log)
+        render(context, root, game, log, info, game_map, message_log)
 
         while True:  # Game loop
             # Sync to fps
             clock.sync(fps=fps)
 
             # Take input and update game
-            message_log = process_step(game_map, entities, message_log)
+            message_log = process_step(game_map, message_log)
 
             # Render game
-            render(context, root, game, log, info, game_map, entities, message_log)
+            render(context, root, game, log, info, game_map, message_log)
 
 
 if __name__ == "__main__":
