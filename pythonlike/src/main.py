@@ -8,8 +8,8 @@ import tcod.context
 import tcod.event
 import tcod.tileset
 
+from engine import Engine
 from game_map import GameMap
-from game import process_step
 from mapgen import generate_map
 
 
@@ -81,6 +81,7 @@ def main():
     # Initialize game objects
     game_map = generate_map(map_width, map_height)
     message_log = deque((log_height - 2)*[], log_height - 2)
+    engine = Engine(game_map)
     
     clock = Clock()
 
@@ -94,7 +95,7 @@ def main():
             clock.sync(fps=fps)
 
             # Take input and update game
-            message_log = process_step(game_map, message_log)
+            message_log = engine.process_step(message_log)
 
             # Render game
             render(context, root, game, log, info, game_map, message_log)
