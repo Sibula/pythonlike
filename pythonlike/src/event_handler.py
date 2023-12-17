@@ -1,4 +1,4 @@
-from tcod import event
+import tcod.event
 
 
 class Action:
@@ -10,14 +10,14 @@ class Action:
 def handle_events():
     """Wait for user input and return an Action object."""
     while True:
-        for ev in event.wait():
+        for ev in tcod.event.wait():
             if ev.type == "QUIT":
                 return Action("quit")
             elif ev.type == "KEYDOWN":
                 return _handle_keydown(ev.scancode, ev.mod)
 
 
-def _handle_keydown(key: event.Scancode, mod: event.Modifier) -> Action:
+def _handle_keydown(key: tcod.event.Scancode, mod: tcod.event.Modifier) -> Action:
     if key in commands:
         return commands[key]
     else:
