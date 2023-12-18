@@ -95,7 +95,15 @@ def main():
             clock.sync(fps=fps)
 
             # Take input and update game
-            engine.process_step(message_log)
+            waiting = True
+            while waiting:
+                for event in tcod.event.wait():
+                    match event:
+                        case tcod.event.Quit():
+                            raise SystemExit()
+                        case tcod.event.KeyDown():
+                            engine.handle_event(event.sym, message_log)
+                            waiting = False
 
             # Render game
             render(context, root, game, log, info, game_map, message_log)

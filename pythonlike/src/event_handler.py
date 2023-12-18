@@ -1,6 +1,7 @@
 import tcod.event
 from tcod.event import KeySym
 
+import actions
 
 class Action:
     def __init__(self, name: str, param=None):

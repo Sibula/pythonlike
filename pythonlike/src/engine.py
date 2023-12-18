@@ -1,23 +1,42 @@
 from collections import deque
+from tcod.event import KeySym
 
-from combat import attack
+import actions
 import entity
-from event_handler import handle_events, Action
+# from event_handler import handle_events, Action
 from game_map import GameMap
-import tile
 
 class Engine:
     def __init__(self, game_map: GameMap) -> None:
         self.game_map = game_map
+        self.commands: dict[KeySym, actions.Action] = {
+            # Movement
+            KeySym.KP_1: actions.Bump(game_map.player, game_map, -1, 1),
+            KeySym.KP_2: actions.Bump(game_map.player, game_map, 0, 1),
+            KeySym.KP_3: actions.Bump(game_map.player, game_map, 1, 1),
+            KeySym.KP_4: actions.Bump(game_map.player, game_map, -1, 0),
+            KeySym.KP_5: actions.Stay(game_map.player, game_map),
+            KeySym.KP_6: actions.Bump(game_map.player, game_map, 1, 0),
+            KeySym.KP_7: actions.Bump(game_map.player, game_map, -1, -1),
+            KeySym.KP_8: actions.Bump(game_map.player, game_map, 0, -1),
+            KeySym.KP_9: actions.Bump(game_map.player, game_map, 1, -1),
+
+            KeySym.KP_0: actions.Interact(game_map.player, game_map),
+            KeySym.KP_PERIOD: actions.Loot(game_map.player, game_map),
+            }
     
-    def process_step(self, message_log: deque) -> deque:
-        action = handle_events()
-        messages = self._update(action)
-        for msg in messages:
-            if msg:
-                message_log.append(msg)
-    
-    def _update(self, action: Action) -> list[str]:
+    def handle_event(self, key: KeySym, message_log: deque)-> deque:
+        action = self.commands[key] or None
+        if action: 
+            self.process_step(action, message_log)
+
+    def process_step(self, action: actions.Action, message_log: deque) -> deque:
+        msg = action.perform()
+        if msg:
+            message_log.append(msg)
+        # Process turns for other entities
+
+    def _update(self, action: actions.Action) -> list[str]:
         messages = []
         # If the player closes the window raise SystemExit.
         if action.name == "quit":
@@ -39,29 +58,4 @@ class Engine:
             # At the end of checking actions process turns for other entities.
         return messages
     
-    def _invalid(self, param):
-        return None  # "Invalid command: {}".format(param)
 
-    def _move(self, action: Action) -> str | None:
-        player = self.game_map.player
-        index = self.game_map.get_creature_index(player.x, player.y)
-        dx, dy = action.param
-        nx, ny = player.x + dx, player.y + dy
-        occupied = self.game_map.is_occupied(nx, ny)
-        nt = self.game_map.tiles[nx, ny]
-        if nt["walkable"] and not occupied:
-            player.x, player.y = nx, ny
-        elif occupied:
-            return attack(index, self.game_map.get_creature_index(nx, ny), self.game_map.entities)
-        elif nt == tile.door:
-            # game_map.tiles[nx, ny].interact()
-            pass
-
-    def _stay(self) -> None:
-        return None
-
-    def _interact(self) -> str:
-        return "interact"
-
-    def _loot(self) -> str:
-        return "loot"
