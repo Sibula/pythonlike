@@ -95,7 +95,7 @@ def main():
             clock.sync(fps=fps)
 
             # Take input and update game
-            message_log = engine.process_step(message_log)
+            engine.process_step(message_log)
 
             # Render game
             render(context, root, game, log, info, game_map, message_log)

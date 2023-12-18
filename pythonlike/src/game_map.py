@@ -29,7 +29,7 @@ class GameMap:
     
     def get_creature_index(self, x: int, y: int) -> int | None:
         '''Return index of entity at (x, y) in entities.'''
-        for i, e in self.entities:
+        for i, e in enumerate(self.entities):
             if e.x == x and e.y == y:
                 return i
         return None

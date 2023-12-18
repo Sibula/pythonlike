@@ -16,8 +16,6 @@ class Engine:
         for msg in messages:
             if msg:
                 message_log.append(msg)
-
-        return message_log
     
     def _update(self, action: Action) -> list[str]:
         messages = []
@@ -46,7 +44,7 @@ class Engine:
 
     def _move(self, action: Action) -> str | None:
         player = self.game_map.player
-        index = self.game_map.get_entity_index(player.x, player.y)
+        index = self.game_map.get_creature_index(player.x, player.y)
         dx, dy = action.param
         nx, ny = player.x + dx, player.y + dy
         occupied = self.game_map.is_occupied(nx, ny)
@@ -54,7 +52,7 @@ class Engine:
         if nt["walkable"] and not occupied:
             player.x, player.y = nx, ny
         elif occupied:
-            return attack(index, self.game_map.get_entity_index(nx, ny), self.game_map.entities)
+            return attack(index, self.game_map.get_creature_index(nx, ny), self.game_map.entities)
         elif nt == tile.door:
             # game_map.tiles[nx, ny].interact()
             pass
