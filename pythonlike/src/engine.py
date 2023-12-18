@@ -2,8 +2,6 @@ from collections import deque
 from tcod.event import KeySym
 
 import actions
-import entity
-# from event_handler import handle_events, Action
 from game_map import GameMap
 
 class Engine:
