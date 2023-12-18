@@ -1,19 +1,24 @@
-class Entity:
-    def __init__(self, x: int, y: int, name: str, char: str, color, b_armor: float, 
-                 b_armor_res: float, attributes: list[int], equipment: dict={}):
-        self.x = x
-        self.y = y
-        self.name = name
-        self.char = char
-        self.color = color
-        self.constitution = attributes[0]
-        self.strength = attributes[1]
-        self.dexterity = attributes[2]
-        self.intelligence = attributes[3]
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+
+@dataclass
+class Entity(ABC):
+    x: int
+    y: int
+    hp: int = field(init=False)
+    name: str
+    char: str
+    color: tuple[int, int, int]
+    constitution: int
+    strength: int
+    dexterity: int
+    intelligence: int
+    b_armor: float
+    b_armor_res: float
+    # equipment: dict = field(default_factory=dict)
+
+    def __post_init__(self):
         self.hp = self.max_hp
-        self.b_armor = b_armor
-        self.b_armor_res = b_armor_res
-        self.equipment = equipment
 
     @property
     def evasion(self) -> float:
@@ -60,49 +65,105 @@ class Entity:
 
 
 # Entities
+@dataclass
 class Player(Entity):
-    def __init__(self, x, y, name="player", char="@", color=(255, 255, 0),
-                 b_armor=0, b_armor_res=0, attributes=(10, 10, 10, 10), equipment={}):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes, equipment)
+    name: str = "player"
+    char: str = "@"
+    color: tuple[int, int, int] = (255, 255, 0)
+    constitution: int = 10
+    strength: int = 10
+    dexterity: int = 10
+    intelligence: int = 10
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class Bat(Entity):
-    def __init__(self, x, y, name="bat", char="b", color=(191, 143, 0),
-                 b_armor=0, b_armor_res=0, attributes=(2, 2, 20, 1)):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes)
+    name: str = "bat"
+    char: str = "b"
+    color: tuple[int, int, int] = (191, 143, 0)
+    constitution: int = 2
+    strength: int = 2
+    dexterity: int = 20
+    intelligence: int = 1
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class GiantBat(Entity):
-    def __init__(self, x, y, name="giant bat", char="b", color=(255, 0, 0),
-                 b_armor=0, b_armor_res=0, attributes=(3, 3, 19, 1)):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes)
+    name: str = "giant bat"
+    char: str = "b"
+    color: tuple[int, int, int] = (255, 0, 0)
+    constitution: int = 3
+    strength: int = 3
+    dexterity: int = 19
+    intelligence: int = 1
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class Rat(Entity):
-    def __init__(self, x, y, name="rat", char="r", color=(191, 143, 0),
-                 b_armor=0, b_armor_res=0, attributes=(3, 3, 18, 1)):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes)
+    name: str = "rat"
+    char: str = "r"
+    color: tuple[int, int, int] = (191, 143, 0)
+    constitution: int = 3
+    strength: int = 3
+    dexterity: int = 18
+    intelligence: int = 1
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class GiantRat(Entity):
-    def __init__(self, x, y, name="giant rat", char="r", color=(255, 0, 0),
-                 b_armor=0, b_armor_res=0, attributes=(5, 4, 17, 1)):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes)
+    name: str = "giant rat"
+    char: str = "r"
+    color: tuple[int, int, int] = (255, 0, 0)
+    constitution: int = 5
+    strength: int = 4
+    dexterity: int = 17
+    intelligence: int = 1
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class Goblin(Entity):
-    def __init__(self, x, y, name="goblin", char="o", color=(191, 143, 0),
-                 b_armor=0, b_armor_res=0, attributes=(7, 7, 15, 3), equipment={}):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes, equipment)
+    name: str = "goblin"
+    char: str = "o"
+    color: tuple[int, int, int] = (191, 143, 0)
+    constitution: int = 7
+    strength: int = 7
+    dexterity: int = 15
+    intelligence: int = 3
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class Hobgoblin(Entity):
-    def __init__(self, x, y, name="hobgoblin", char="o", color=(255, 0, 0),
-                 b_armor=0, b_armor_res=0, attributes=(9, 9, 8, 3), equipment={}):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes, equipment)
+    name: str = "hobgoblin"
+    char: str = "o"
+    color: tuple[int, int, int] = (255, 0, 0)
+    constitution: int = 9
+    strength: int = 9
+    dexterity: int = 8
+    intelligence: int = 3
+    b_armor: float = 0
+    b_armor_res: float = 0
 
 
+@dataclass
 class Orc(Entity):
-    def __init__(self, x, y, name="orc", char="o", color=(191, 191, 0),
-                 b_armor=0, b_armor_res=0, attributes=(12, 12, 8, 3), equipment={}):
-        super().__init__(x, y, name, char, color, b_armor, b_armor_res, attributes, equipment)
+    name: str = "orc"
+    char: str = "o"
+    color: tuple[int, int, int] = (191, 191, 0)
+    constitution: int = 12
+    strength: int = 12
+    dexterity: int = 8
+    intelligence: int = 3
+    b_armor: float = 0
+    b_armor_res: float = 0
