@@ -33,27 +33,3 @@ class Engine:
         if msg:
             message_log.append(msg)
         # Process turns for other entities
-
-    def _update(self, action: actions.Action) -> list[str]:
-        messages = []
-        # If the player closes the window raise SystemExit.
-        if action.name == "quit":
-            raise SystemExit()
-        # If command was invalid do something.
-        if action.name == "invalid":
-            messages.append(self._invalid(action.param))
-        else:
-            # Update the game if the command was valid.
-            if action.name == "move":
-                messages.append(self._move(action))
-            if action.name == "stay":
-                messages.append(self._stay())
-            if action.name == "interact":
-                messages.append(self._interact())
-            if action.name == "loot":
-                messages.append(self._loot())
-
-            # At the end of checking actions process turns for other entities.
-        return messages
-    
-
