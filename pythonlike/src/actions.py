@@ -1,26 +1,37 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import random
 
-import combat
-import entity
-import game_map
+from entity import Entity
+from game_map import GameMap
 
 
 # Abstract actions
 
 @dataclass
 class Action(ABC):
-    entity: entity.Entity
-    game_map: game_map.GameMap
+    entity: Entity
+    game_map: GameMap
 
     @abstractmethod
     def perform(self) -> str | None:
+        """Perform the action."""
         pass
 
 @dataclass
 class DirectedAction(Action):
     dx: int
     dy: int
+
+    @property
+    def dest(self) -> tuple[int, int]:
+        """Return the (x, y) coordinates of the destination."""
+        return self.entity.x + self.dx, self.entity.y + self.dy
+    
+    @property
+    def target_creature(self) -> Entity | None:
+        """Return the creature at the destination or None"""
+        return self.game_map.get_creature(*self.dest)
 
     @abstractmethod
     def perform(self) -> str | None:
@@ -29,45 +40,11 @@ class DirectedAction(Action):
 
 # Actions
 
-class Interact(Action):
-    def perform(self) -> str:
-        return "interact"
-
-class InvalidAction(Action):
-    def perform(self) -> None:
-        # Could log these or something?
-        pass
-
-class Loot(Action):
-    def perform(self) -> str:
-        return "loot"
-
-class Melee(DirectedAction):
-    def perform(self) -> str:
-        x = self.entity.x + self.dx
-        y = self.entity.y + self.dy
-        creature = self.game_map.get_creature(x, y)
-        if creature:
-            return f"Hit {creature.name}"
-        # Other melee targets, like doors etc.
-        return None
-
-class Move(DirectedAction):
-    def perform(self) -> str:
-        self.entity.x += self.dx
-        self.entity.y += self.dy
-        
-class Stay(Action):
-    def perform(self) -> None:
-        pass
-
+@dataclass
 class Bump(DirectedAction):
     def perform(self) -> str | None:
-        nx = self.entity.x + self.dx
-        ny = self.entity.y + self.dy
-        nt = self.game_map.tiles[nx, ny]
-        if nt["walkable"]:
-            if self.game_map.is_occupied(nx, ny):
+        if self.game_map.is_walkable(*self.dest):
+            if self.game_map.is_occupied(*self.dest):
                 return Melee(self.entity, self.game_map, self.dx, self.dy).perform()
             else:
                 return Move(self.entity, self.game_map, self.dx, self.dy).perform()
@@ -75,23 +52,94 @@ class Bump(DirectedAction):
             # TODO: Add door functionality
             return None
 
+@dataclass
+class Interact(Action):
+    def perform(self) -> str:
+        return "interact"
+
+@dataclass
+class InvalidAction(Action):
+    def perform(self) -> None:
+        # Could log these or something?
+        pass
+
+@dataclass
+class Loot(Action):
+    def perform(self) -> str:
+        return "loot"
+
+@dataclass
+class Melee(DirectedAction):
+    def perform(self) -> str:
+        target = self.target_creature
+        if target:
+            return resolve_attack(self.entity, target, self.game_map.entities)
+            # Other melee targets, like doors etc.
+        return None
+
+@dataclass
+class Move(DirectedAction):
+    def perform(self) -> str:
+        self.entity.x += self.dx
+        self.entity.y += self.dy
+ 
+@dataclass
 class Quit(Action):
     def perform(self) -> None:
         raise SystemExit()
-
-'''
-def _move(self, action: Action) -> str | None:
-    player = self.game_map.player
-    index = self.game_map.get_entity_index(player.x, player.y)
-    dx, dy = action.param
-    nx, ny = player.x + dx, player.y + dy
-    occupied = self.game_map.is_occupied(nx, ny)
-    nt = self.game_map.tiles[nx, ny]
-    if nt["walkable"] and not occupied:
-        player.x, player.y = nx, ny
-    elif occupied:
-        return attack(index, self.game_map.get_entity_index(nx, ny), self.game_map.entities)
-    elif nt == tile.door:
-        # game_map.tiles[nx, ny].interact()
+       
+@dataclass
+class Stay(Action):
+    def perform(self) -> None:
         pass
-'''
+
+
+# Combat stuff
+
+@dataclass
+class CombatResult:
+    attacker: Entity
+    defender: Entity
+    hit: bool = False
+    hit_armor: bool = False
+    damage: int = 0
+    kill: bool = False
+
+
+def resolve_attack(attacker: Entity, defender: Entity, entities: list[Entity]) -> str:
+    # Calculate values
+    hit_chance = attacker.accuracy * (1 - defender.evasion)
+    hit_armor_chance = defender.armor
+    normal_damage = attacker.damage
+    armor_damage = round(attacker.damage * (1 - defender.resistance))
+
+    # Calculate result from values
+    result = CombatResult(attacker, defender)
+    result.hit = hit_chance > random.random()
+    if result.hit:
+        result.hit_armor = hit_armor_chance > random.random()
+        result.damage = armor_damage if result.hit_armor else normal_damage
+        defender.take_damage(result.damage)
+        if defender.hp < 1:
+            result.kill = True
+
+    message = attack_message(result)
+
+    if result.kill:
+        entities.remove(defender)
+
+    return message
+
+
+def attack_message(result: CombatResult) -> str:
+    att_str = "you" if result.attacker.name == "player" else f"the {result.attacker.name}"
+    def_str = "you" if result.defender.name == "player" else f"the {result.defender.name}"
+
+    if result.hit:
+        message = f"{att_str} hit {def_str} for {result.damage} damage. ".capitalize()
+        if result.kill:
+            message += f"{def_str} died.".capitalize()
+    else:
+        message = f"{att_str} missed {def_str}.".capitalize()
+
+    return message
