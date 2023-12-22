@@ -1,11 +1,7 @@
 import numpy as np
 
+from util import GraphicType, graphic_dtype
 
-graphic_dtype = np.dtype([
-    ("ch", np.intc),
-    ("fg", "(4,)u1"),
-    ("bg", "(4,)u1"),
-    ])
 
 tile_dtype = np.dtype([
     ("transparent", bool),
@@ -15,10 +11,9 @@ tile_dtype = np.dtype([
 
 
 def new_tile(
-        *,
         transparent: int,
         walkable: int,
-        graphic: tuple[int, tuple[int, int, int, int], tuple[int, int, int, int]],
+        graphic: GraphicType,
         ) -> np.ndarray:
     return np.array((transparent, walkable, graphic), dtype=tile_dtype)
 

@@ -73,7 +73,7 @@ class Melee(DirectedAction):
     def perform(self) -> str:
         target = self.target_creature
         if target:
-            return resolve_attack(self.entity, target, self.game_map.entities)
+            return resolve_attack(self.entity, target, self.game_map.creatures)
             # Other melee targets, like doors etc.
         return None
 

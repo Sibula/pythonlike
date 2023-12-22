@@ -42,8 +42,9 @@ def render(context: tcod.context.Context, root: tcod.console.Console, game: tcod
         # game.print(x, y, tile.char, tile.color)
         game.rgba[x, y] = t["graphic"]
 
-    for entity in game_map.entities:
-        game.print(entity.x, entity.y, entity.char, entity.color)
+    for entity in game_map.creatures:
+        # game.print(entity.x, entity.y, entity.char, entity.color)
+        game.rgba[entity.x, entity.y] = entity.graphic
 
     log.draw_frame(0, 0, 80, 15, "Game Log")
     for i, msg in enumerate(message_log):
