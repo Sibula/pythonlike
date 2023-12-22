@@ -39,14 +39,16 @@ def render(context: tcod.context.Context, root: tcod.console.Console, game: tcod
     """Render and draw everything."""
     # Render all consoles.
     for (x, y), t in np.ndenumerate(game_map.tiles):
-        # game.print(x, y, tile.char, tile.color)
         game.rgba[x, y] = t["graphic"]
     
     game.blit(root)  # To make alpha channels work properly for entities
 
-    for entity in game_map.creatures:
-        # game.print(entity.x, entity.y, entity.char, entity.color)
-        game.rgba[entity.x, entity.y] = entity.graphic
+    for object in game_map.objects:
+        game.rgba[object.x, object.y] = object.graphic
+    for item in game_map.items:
+        game.rgba[item.x, item.y] = item.graphic
+    for creature in game_map.creatures:
+        game.rgba[creature.x, creature.y] = creature.graphic
 
     log.draw_frame(0, 0, 80, 15, "Game Log")
     for i, msg in enumerate(message_log):

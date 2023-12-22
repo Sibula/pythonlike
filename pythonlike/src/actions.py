@@ -2,9 +2,11 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import random
 
+from creature import Creature
 from entity import Entity
 from game_map import GameMap
-
+from item import Item
+from object import Object
 
 # Abstract actions
 
@@ -43,19 +45,23 @@ class DirectedAction(Action):
 @dataclass
 class Bump(DirectedAction):
     def perform(self) -> str | None:
-        if self.game_map.is_walkable(*self.dest):
-            if self.game_map.is_occupied(*self.dest):
-                return Melee(self.entity, self.game_map, self.dx, self.dy).perform()
-            else:
-                return Move(self.entity, self.game_map, self.dx, self.dy).perform()
-        else:
-            # TODO: Add door functionality
-            return None
+        if self.game_map.tiles[*self.dest]["walkable"]:
+            ent = self.game_map.get_blocking_entity(*self.dest)
+            match ent:
+                case None:
+                    return Move(self.entity, self.game_map, self.dx, self.dy).perform()
+                case Creature():
+                    return Melee(self.entity, self.game_map, self.dx, self.dy).perform()
+                case Object():
+                    return ent.interact()
+
+        return None
 
 @dataclass
 class Interact(Action):
     def perform(self) -> str:
         return "interact"
+
 
 @dataclass
 class InvalidAction(Action):

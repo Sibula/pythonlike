@@ -2,7 +2,9 @@ import random
 import numpy as np
 
 import creature
+import entity
 from game_map import GameMap
+import object
 import tile
 
 
@@ -183,11 +185,11 @@ def _tile_map(tiles: np.ndarray, rooms: list[Room]) -> np.ndarray:
     return tiles
 
 
-def init_entities(tiles: np.ndarray) -> list[creature.Creature]:
+def init_entities(tiles: np.ndarray) -> list[entity.Entity]:
     """Initialize entities list."""
     entities = [creature.Player(0, 0), creature.Rat(0, 0), creature.GiantRat(0, 0), creature.Bat(0, 0), 
                 creature.GiantBat(0, 0), creature.Goblin(0, 0), creature.Hobgoblin(0, 0), 
-                creature.Orc(0, 0)]
+                creature.Orc(0, 0), object.Door(0,0)]
 
     walkable_tiles = []
     for (x, y), t in np.ndenumerate(tiles):

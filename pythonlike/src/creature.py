@@ -66,8 +66,6 @@ class Creature(Entity):
 @dataclass
 class Player(Creature):
     name: str = "player"
-    # char: str = "@"
-    # color: tuple[int, int, int] = (255, 255, 0)
     graphic=(ord("@"), (255, 255, 0, 255), (0, 0, 0, 0))
     constitution: int = 10
     strength: int = 10
@@ -80,8 +78,6 @@ class Player(Creature):
 @dataclass
 class Bat(Creature):
     name: str = "bat"
-    # char: str = "b"
-    # color: tuple[int, int, int] = (191, 143, 0)
     graphic=(ord("b"), (191, 143, 0, 255), (0, 0, 0, 0))
     constitution: int = 2
     strength: int = 2
@@ -94,8 +90,6 @@ class Bat(Creature):
 @dataclass
 class GiantBat(Creature):
     name: str = "giant bat"
-    # char: str = "b"
-    # color: tuple[int, int, int] = (255, 0, 0)
     graphic=(ord("b"), (255, 0, 0, 255), (0, 0, 0, 0))
     constitution: int = 3
     strength: int = 3
@@ -108,8 +102,6 @@ class GiantBat(Creature):
 @dataclass
 class Rat(Creature):
     name: str = "rat"
-    # char: str = "r"
-    # color: tuple[int, int, int] = (191, 143, 0)
     graphic=(ord("r"), (191, 143, 0, 255), (0, 0, 0, 0))
     constitution: int = 3
     strength: int = 3
@@ -122,8 +114,6 @@ class Rat(Creature):
 @dataclass
 class GiantRat(Creature):
     name: str = "giant rat"
-    # char: str = "r"
-    # color: tuple[int, int, int] = (255, 0, 0)
     graphic=(ord("r"), (255, 0, 0, 255), (0, 0, 0, 0))
     constitution: int = 5
     strength: int = 4
@@ -136,8 +126,6 @@ class GiantRat(Creature):
 @dataclass
 class Goblin(Creature):
     name: str = "goblin"
-    # char: str = "o"
-    # color: tuple[int, int, int] = (191, 143, 0)
     graphic=(ord("o"), (191, 143, 0, 255), (0, 0, 0, 0))
     constitution: int = 7
     strength: int = 7
@@ -150,8 +138,6 @@ class Goblin(Creature):
 @dataclass
 class Hobgoblin(Creature):
     name: str = "hobgoblin"
-    # char: str = "o"
-    # color: tuple[int, int, int] = (255, 0, 0)
     graphic=(ord("o"), (255, 0, 0, 255), (0, 0, 0, 0))
     constitution: int = 9
     strength: int = 9
@@ -164,8 +150,6 @@ class Hobgoblin(Creature):
 @dataclass
 class Orc(Creature):
     name: str = "orc"
-    # char: str = "o"
-    # color: tuple[int, int, int] = (191, 191, 0)
     graphic=(ord("o"), (191, 191, 0, 255), (0, 0, 0, 0))
     constitution: int = 12
     strength: int = 12
