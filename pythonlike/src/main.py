@@ -41,6 +41,8 @@ def render(context: tcod.context.Context, root: tcod.console.Console, game: tcod
     for (x, y), t in np.ndenumerate(game_map.tiles):
         # game.print(x, y, tile.char, tile.color)
         game.rgba[x, y] = t["graphic"]
+    
+    game.blit(root)  # To make alpha channels work properly for entities
 
     for entity in game_map.creatures:
         # game.print(entity.x, entity.y, entity.char, entity.color)
