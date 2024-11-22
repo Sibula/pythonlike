@@ -1,8 +1,10 @@
 import numpy as np
-from creature import Creature
-from entity import Entity
-from item import Item
-from object import Object
+
+from .creature import Creature
+from .entity import Entity
+from .item import Item
+from .object import Object
+
 
 class GameMap:
     def __init__(self, w: int, h: int, tiles: np.ndarray, entities: list[Entity]):
@@ -32,8 +34,8 @@ class GameMap:
         if obj:
             return tile_walkable and obj.walkable
         return tile_walkable
-    
-    def is_occupied(self, x: int, y:int) -> bool:
+
+    def is_occupied(self, x: int, y: int) -> bool:
         return True if self.get_creature(x, y) else False
 
     def get_blocking_entity(self, x: int, y: int) -> Entity | None:
@@ -51,7 +53,7 @@ class GameMap:
             if c.x == x and c.y == y:
                 return c
         return None
-    
+
     def get_creature_index(self, x: int, y: int) -> int | None:
         """Return index of creature at (x, y) in creatures."""
         for i, e in enumerate(self.creatures):
