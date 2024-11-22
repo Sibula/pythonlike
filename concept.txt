@@ -6,11 +6,11 @@ name	tiny		small			medium			large
 Entity attributes:
 base evasion		smaller/faster entities have more (0: cannot evade, 1: always evades)
 base hp			bigger and tougher enemies have more
-base energy		
+base energy
 base armor		coverage of natural armor (shell etc.) (0: no armor, 1: fully covered by armor)
 base armor resist	resistances of natural armor per damage type (0: doesn't resist, 1: fully resists)
 base accuracy		smaller/faster entities have more (0: cannot hit anything, 1: always hits a target with no evasion)
-level			
+level
 
 strength		physical damage, carry limit, range of ranged weapons
 dexterity		evasion, accuracy

@@ -1,8 +1,10 @@
 from collections import deque
+
 from tcod.event import KeySym
 
-import actions
-from game_map import GameMap
+from . import actions
+from .game_map import GameMap
+
 
 class Engine:
     def __init__(self, game_map: GameMap) -> None:
@@ -18,14 +20,13 @@ class Engine:
             KeySym.KP_7: actions.Bump(game_map.player, game_map, -1, -1),
             KeySym.KP_8: actions.Bump(game_map.player, game_map, 0, -1),
             KeySym.KP_9: actions.Bump(game_map.player, game_map, 1, -1),
-
             KeySym.KP_0: actions.Interact(game_map.player, game_map),
             KeySym.KP_PERIOD: actions.Loot(game_map.player, game_map),
-            }
-    
-    def handle_event(self, key: KeySym, message_log: deque)-> deque:
-        action = self.commands[key] or None
-        if action: 
+        }
+
+    def handle_event(self, key: KeySym, message_log: deque) -> deque:
+        if key in self.commands.keys():
+            action = self.commands[key]
             self.process_step(action, message_log)
 
     def process_step(self, action: actions.Action, message_log: deque) -> deque:

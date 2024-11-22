@@ -1,6 +1,6 @@
+import time
 from collections import deque
 from pathlib import Path
-import time
 
 import numpy as np
 import tcod.console
@@ -8,9 +8,9 @@ import tcod.context
 import tcod.event
 import tcod.tileset
 
-from engine import Engine
-from game_map import GameMap
-from mapgen import generate_map
+from .engine import Engine
+from .game_map import GameMap
+from .mapgen import generate_map
 
 
 class Clock:
@@ -33,14 +33,20 @@ class Clock:
         self.last_time = time.perf_counter()
 
 
-def render(context: tcod.context.Context, root: tcod.console.Console, game: tcod.console.Console,
-           log: tcod.console.Console, info: tcod.console.Console, game_map: GameMap,
-           message_log: deque):
+def render(
+    context: tcod.context.Context,
+    root: tcod.console.Console,
+    game: tcod.console.Console,
+    log: tcod.console.Console,
+    info: tcod.console.Console,
+    game_map: GameMap,
+    message_log: deque,
+):
     """Render and draw everything."""
     # Render all consoles.
     for (x, y), t in np.ndenumerate(game_map.tiles):
         game.rgba[x, y] = t["graphic"]
-    
+
     game.blit(root)  # To make alpha channels work properly for entities
 
     for object in game_map.objects:
@@ -64,6 +70,7 @@ def render(context: tcod.context.Context, root: tcod.console.Console, game: tcod
 
 
 def main():
+    """pythonlike"""
     # Set variables
     root_width, root_height = 100, 55
     game_width, game_height = 80, 40
@@ -74,24 +81,26 @@ def main():
 
     # Load tileset
     tileset = tcod.tileset.load_tilesheet(
-        Path(__file__).resolve().parent / "data" / "terminal12x12_gs_ro.png", 
-        columns=16, rows=16, charmap=tcod.tileset.CHARMAP_CP437)
-    
+        Path(__file__).resolve().parent / "data" / "terminal12x12_gs_ro.png",
+        columns=16,
+        rows=16,
+        charmap=tcod.tileset.CHARMAP_CP437,
+    )
+
     # Initialize consoles
-    root = tcod.console.Console(root_width, root_height, order='F')
+    root = tcod.console.Console(root_width, root_height, order="F")
     game = tcod.console.Console(game_width, game_height, "F")
     log = tcod.console.Console(log_width, log_height, "F")
     info = tcod.console.Console(info_width, info_height, "F")
 
     # Initialize game objects
     game_map = generate_map(map_width, map_height)
-    message_log = deque((log_height - 2)*[], log_height - 2)
+    message_log = deque((log_height - 2) * [], log_height - 2)
     engine = Engine(game_map)
-    
+
     clock = Clock()
 
-    with tcod.context.new(console=root, tileset=tileset, 
-                          title="pythonlike") as context:
+    with tcod.context.new(console=root, tileset=tileset, title="pythonlike") as context:
         # Initial rendering of the map
         render(context, root, game, log, info, game_map, message_log)
 
@@ -115,4 +124,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="pythonlike")

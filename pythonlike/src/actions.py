@@ -1,14 +1,16 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 import random
+from abc import ABC
+from abc import abstractmethod
+from dataclasses import dataclass
 
-from creature import Creature
-from entity import Entity
-from game_map import GameMap
-from item import Item
-from object import Object
+from .creature import Creature
+from .entity import Entity
+from .game_map import GameMap
+from .object import Object
+
 
 # Abstract actions
+
 
 @dataclass
 class Action(ABC):
@@ -20,6 +22,7 @@ class Action(ABC):
         """Perform the action."""
         pass
 
+
 @dataclass
 class DirectedAction(Action):
     dx: int
@@ -29,7 +32,7 @@ class DirectedAction(Action):
     def dest(self) -> tuple[int, int]:
         """Return the (x, y) coordinates of the destination."""
         return self.entity.x + self.dx, self.entity.y + self.dy
-    
+
     @property
     def target_creature(self) -> Entity | None:
         """Return the creature at the destination or None"""
@@ -41,6 +44,7 @@ class DirectedAction(Action):
 
 
 # Actions
+
 
 @dataclass
 class Bump(DirectedAction):
@@ -57,6 +61,7 @@ class Bump(DirectedAction):
 
         return None
 
+
 @dataclass
 class Interact(Action):
     def perform(self) -> str:
@@ -69,10 +74,12 @@ class InvalidAction(Action):
         # Could log these or something?
         pass
 
+
 @dataclass
 class Loot(Action):
     def perform(self) -> str:
         return "loot"
+
 
 @dataclass
 class Melee(DirectedAction):
@@ -83,17 +90,20 @@ class Melee(DirectedAction):
             # Other melee targets, like doors etc.
         return None
 
+
 @dataclass
 class Move(DirectedAction):
     def perform(self) -> str:
         self.entity.x += self.dx
         self.entity.y += self.dy
- 
+
+
 @dataclass
 class Quit(Action):
     def perform(self) -> None:
         raise SystemExit()
-       
+
+
 @dataclass
 class Stay(Action):
     def perform(self) -> None:
@@ -101,6 +111,7 @@ class Stay(Action):
 
 
 # Combat stuff
+
 
 @dataclass
 class CombatResult:
@@ -138,8 +149,12 @@ def resolve_attack(attacker: Entity, defender: Entity, entities: list[Entity]) -
 
 
 def attack_message(result: CombatResult) -> str:
-    att_str = "you" if result.attacker.name == "player" else f"the {result.attacker.name}"
-    def_str = "you" if result.defender.name == "player" else f"the {result.defender.name}"
+    att_str = (
+        "you" if result.attacker.name == "player" else f"the {result.attacker.name}"
+    )
+    def_str = (
+        "you" if result.defender.name == "player" else f"the {result.defender.name}"
+    )
 
     if result.hit:
         message = f"{att_str} hit {def_str} for {result.damage} damage. ".capitalize()

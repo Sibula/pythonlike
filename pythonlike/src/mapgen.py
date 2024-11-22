@@ -1,15 +1,18 @@
 import random
+
 import numpy as np
 
-import creature
-import entity
-from game_map import GameMap
-import object
-import tile
+from . import creature
+from . import entity
+from . import object
+from . import tile
+from .game_map import GameMap
 
 
 class Room:
-    def __init__(self, x_min: int, y_min: int, x_max: int, y_max: int, door: tuple[int, int]):
+    def __init__(
+        self, x_min: int, y_min: int, x_max: int, y_max: int, door: tuple[int, int]
+    ):
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
@@ -31,7 +34,10 @@ class Room:
         return candidates
 
     def contains(self, x: int, y: int) -> bool:
-        return self.x_min - 1 <= x <= self.x_max + 1 and self.y_min - 1 <= y <= self.y_max + 1
+        return (
+            self.x_min - 1 <= x <= self.x_max + 1
+            and self.y_min - 1 <= y <= self.y_max + 1
+        )
 
     def interior(self, x: int, y: int) -> bool:
         return self.x_min <= x <= self.x_max and self.y_min <= y <= self.y_max
@@ -42,7 +48,9 @@ def generate_map(m_width: int, m_height: int) -> np.ndarray:
     max_size = 15
     tiles = np.full((m_width, m_height), tile.empty)  # Initialize empty map.
     rooms = []  # List to store generated rooms in.
-    taken = np.zeros_like(tiles, dtype=int)  # Empty array to store if a tile belongs to a room.
+    taken = np.zeros_like(
+        tiles, dtype=int
+    )  # Empty array to store if a tile belongs to a room.
     taken_ratio = 0  # Ratio of map filled with rooms.
     while taken_ratio < 0.75:
         _create_room(min_size, max_size, m_width, m_height, rooms, taken)
@@ -56,8 +64,14 @@ def generate_map(m_width: int, m_height: int) -> np.ndarray:
     return GameMap(m_width, m_height, tiles=tiles, entities=entities)
 
 
-def _create_room(min_size: int, max_size: int, m_width: int, m_height: int, rooms: list[Room], 
-                 taken: np.ndarray):
+def _create_room(
+    min_size: int,
+    max_size: int,
+    m_width: int,
+    m_height: int,
+    rooms: list[Room],
+    taken: np.ndarray,
+):
     if not rooms:
         # Parameters for first room.
         start_tile = None
@@ -102,7 +116,7 @@ def _create_room(min_size: int, max_size: int, m_width: int, m_height: int, room
     proper = _check(room, min_size, m_width, m_height, start_tile, taken)
     if proper:
         rooms.append(room)
-        for (x, y) in np.ndindex(taken.shape):
+        for x, y in np.ndindex(taken.shape):
             if room.contains(x, y):
                 taken[x, y] = 1
 
@@ -120,11 +134,21 @@ def _check_dir(start_tile: tuple[int, int], room: Room):
         return "down"
 
 
-def _check(room: Room, min_size: int, m_width: int, m_height: int, start_tile: tuple[int, int], 
-           taken: np.ndarray) -> bool:
+def _check(  # noqa: C901
+    room: Room,
+    min_size: int,
+    m_width: int,
+    m_height: int,
+    start_tile: tuple[int, int],
+    taken: np.ndarray,
+) -> bool:
     # Fit inside map
-    while room.x_min < 1 or room.y_min < 1 or room.x_max > m_width - 2 \
-            or room.y_max > m_height - 2:
+    while (
+        room.x_min < 1
+        or room.y_min < 1
+        or room.x_max > m_width - 2
+        or room.y_max > m_height - 2
+    ):
         if room.x_min < 1:
             room.x_min += 1
         if room.y_min < 1:
@@ -162,7 +186,7 @@ def add_stairs(rooms: list[Room]):
     down_room.stairs_down = (down_x, down_y)
 
 
-def _tile_map(tiles: np.ndarray, rooms: list[Room]) -> np.ndarray:
+def _tile_map(tiles: np.ndarray, rooms: list[Room]) -> np.ndarray:  # noqa: C901
     # Add the rooms themselves (wall/floor).
     for room in rooms:
         for x in range(room.x_min, room.x_max + 1):
@@ -170,7 +194,12 @@ def _tile_map(tiles: np.ndarray, rooms: list[Room]) -> np.ndarray:
                 tiles[x, y] = tile.floor
         for x in range(room.x_min - 1, room.x_max + 2):
             for y in range(room.y_min - 1, room.y_max + 2):
-                if x == room.x_min - 1 or x == room.x_max + 1 or y == room.y_min - 1 or y == room.y_max + 1:
+                if (
+                    x == room.x_min - 1
+                    or x == room.x_max + 1
+                    or y == room.y_min - 1
+                    or y == room.y_max + 1
+                ):
                     tiles[x, y] = tile.wall
 
     # Add other features.
@@ -187,15 +216,23 @@ def _tile_map(tiles: np.ndarray, rooms: list[Room]) -> np.ndarray:
 
 def init_entities(tiles: np.ndarray) -> list[entity.Entity]:
     """Initialize entities list."""
-    entities = [creature.Player(0, 0), creature.Rat(0, 0), creature.GiantRat(0, 0), creature.Bat(0, 0), 
-                creature.GiantBat(0, 0), creature.Goblin(0, 0), creature.Hobgoblin(0, 0), 
-                creature.Orc(0, 0), object.Door(0,0)]
+    entities = [
+        creature.Player(0, 0),
+        creature.Rat(0, 0),
+        creature.GiantRat(0, 0),
+        creature.Bat(0, 0),
+        creature.GiantBat(0, 0),
+        creature.Goblin(0, 0),
+        creature.Hobgoblin(0, 0),
+        creature.Orc(0, 0),
+        object.Door(0, 0),
+    ]
 
     walkable_tiles = []
     for (x, y), t in np.ndenumerate(tiles):
         if t["walkable"]:
             walkable_tiles.append((x, y))
-    
+
     for e in entities:
         t = random.choice(walkable_tiles)
         e.x = t[0]
