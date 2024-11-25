@@ -1,8 +1,8 @@
 from abc import abstractmethod
-from dataclasses import dataclass
-from dataclasses import field
+from dataclasses import dataclass, field
 
 from .entity import Entity
+from .util import GraphicType
 
 
 @dataclass
@@ -11,8 +11,8 @@ class Object(Entity):
     walkable: bool = field(init=False)
 
     @abstractmethod
-    def interact(self):
-        pass
+    def interact(self) -> None:
+        raise NotImplementedError
 
 
 @dataclass
@@ -21,21 +21,20 @@ class Door(Object):
     open: bool = False
 
     @property
-    def graphic(self):
+    def graphic(self) -> GraphicType:
         if self.open:
             return (ord("_"), (191, 143, 0, 255), (0, 0, 0, 0))
-        else:
-            return (ord("+"), (191, 143, 0, 255), (0, 0, 0, 0))
+        return (ord("+"), (191, 143, 0, 255), (0, 0, 0, 0))
 
     @property
-    def transparent(self):
+    def transparent(self) -> bool:
         return self.open
 
     @property
-    def walkable(self):
+    def walkable(self) -> bool:
         return self.open
 
-    def interact(self):
+    def interact(self) -> None:
         self.open = not self.open
 
 

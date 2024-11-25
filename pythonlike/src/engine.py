@@ -25,7 +25,7 @@ class Engine:
         }
 
     def handle_event(self, key: KeySym, message_log: deque) -> deque:
-        if key in self.commands.keys():
+        if key in self.commands:
             action = self.commands[key]
             self.process_step(action, message_log)
 

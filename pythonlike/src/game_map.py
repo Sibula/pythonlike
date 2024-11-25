@@ -7,7 +7,7 @@ from .object import Object
 
 
 class GameMap:
-    def __init__(self, w: int, h: int, tiles: np.ndarray, entities: list[Entity]):
+    def __init__(self, w: int, h: int, tiles: np.ndarray, entities: list[Entity]) -> None:
         self.w = w
         self.h = h
         self.tiles = tiles
@@ -36,15 +36,15 @@ class GameMap:
         return tile_walkable
 
     def is_occupied(self, x: int, y: int) -> bool:
-        return True if self.get_creature(x, y) else False
+        return bool(self.get_creature(x, y))
 
     def get_blocking_entity(self, x: int, y: int) -> Entity | None:
         creature = self.get_creature(x, y)
         if creature:
             return creature
-        object = self.get_object(x, y)
-        if object and not object.walkable:
-            return object
+        obj = self.get_object(x, y)
+        if obj and not obj.walkable:
+            return obj
         return None
 
     def get_creature(self, x: int, y: int) -> Creature | None:

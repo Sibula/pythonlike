@@ -1,18 +1,16 @@
 import random
+from typing import Literal
 
 import numpy as np
 
-from . import creature
-from . import entity
-from . import object
-from . import tile
+from . import creature, entity, object as fix_object, tile
 from .game_map import GameMap
 
 
 class Room:
     def __init__(
-        self, x_min: int, y_min: int, x_max: int, y_max: int, door: tuple[int, int]
-    ):
+        self, x_min: int, y_min: int, x_max: int, y_max: int, door: tuple[int, int],
+    ) -> None:
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
@@ -49,7 +47,7 @@ def generate_map(m_width: int, m_height: int) -> np.ndarray:
     tiles = np.full((m_width, m_height), tile.empty)  # Initialize empty map.
     rooms = []  # List to store generated rooms in.
     taken = np.zeros_like(
-        tiles, dtype=int
+        tiles, dtype=int,
     )  # Empty array to store if a tile belongs to a room.
     taken_ratio = 0  # Ratio of map filled with rooms.
     while taken_ratio < 0.75:
@@ -71,7 +69,7 @@ def _create_room(
     m_height: int,
     rooms: list[Room],
     taken: np.ndarray,
-):
+) -> None:
     if not rooms:
         # Parameters for first room.
         start_tile = None
@@ -121,7 +119,7 @@ def _create_room(
                 taken[x, y] = 1
 
 
-def _check_dir(start_tile: tuple[int, int], room: Room):
+def _check_dir(start_tile: tuple[int, int], room: Room) -> Literal["left", "right", "up", "down"]:
     # Check which direction the new room should grow.
     x, y = start_tile
     if x < room.x_min:
@@ -132,9 +130,10 @@ def _check_dir(start_tile: tuple[int, int], room: Room):
         return "up"
     if y > room.y_max:
         return "down"
+    raise ValueError
 
 
-def _check(  # noqa: C901
+def _check(
     room: Room,
     min_size: int,
     m_width: int,
@@ -165,18 +164,14 @@ def _check(  # noqa: C901
                 return False
 
     # Check if the starting coordinates are inside the room
-    if start_tile:
-        if not room.interior(start_tile[0], start_tile[1]):
-            return False
-
-    # Check proper size
-    if room.x_max - room.x_min < min_size or room.y_max - room.y_min < min_size:
+    if start_tile and not room.interior(start_tile[0], start_tile[1]):
         return False
 
-    return True
+    # Check proper size
+    return room.x_max - room.x_min >= min_size and room.y_max - room.y_min >= min_size
 
 
-def add_stairs(rooms: list[Room]):
+def add_stairs(rooms: list[Room]) -> None:
     up_room, down_room = random.sample(rooms, 2)
     up_x = random.randint(up_room.x_min, up_room.x_max)
     up_y = random.randint(up_room.y_min, up_room.y_max)
@@ -225,7 +220,7 @@ def init_entities(tiles: np.ndarray) -> list[entity.Entity]:
         creature.Goblin(0, 0),
         creature.Hobgoblin(0, 0),
         creature.Orc(0, 0),
-        object.Door(0, 0),
+        fix_object.Door(0, 0),
     ]
 
     walkable_tiles = []

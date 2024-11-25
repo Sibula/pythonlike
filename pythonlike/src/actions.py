@@ -1,6 +1,5 @@
 import random
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from .creature import Creature
@@ -8,9 +7,7 @@ from .entity import Entity
 from .game_map import GameMap
 from .object import Object
 
-
 # Abstract actions
-
 
 @dataclass
 class Action(ABC):
@@ -44,7 +41,6 @@ class DirectedAction(Action):
 
 
 # Actions
-
 
 @dataclass
 class Bump(DirectedAction):
@@ -101,7 +97,7 @@ class Move(DirectedAction):
 @dataclass
 class Quit(Action):
     def perform(self) -> None:
-        raise SystemExit()
+        raise SystemExit
 
 
 @dataclass
@@ -111,7 +107,6 @@ class Stay(Action):
 
 
 # Combat stuff
-
 
 @dataclass
 class CombatResult:

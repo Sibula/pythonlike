@@ -1,6 +1,5 @@
 from abc import ABC
-from dataclasses import dataclass
-from dataclasses import field
+from dataclasses import dataclass, field
 
 from .util import GraphicType
 

@@ -1,6 +1,7 @@
 import time
 from collections import deque
 from pathlib import Path
+from typing import NoReturn
 
 import numpy as np
 import tcod.console
@@ -41,7 +42,7 @@ def render(
     info: tcod.console.Console,
     game_map: GameMap,
     message_log: deque,
-):
+) -> None:
     """Render and draw everything."""
     # Render all consoles.
     for (x, y), t in np.ndenumerate(game_map.tiles):
@@ -49,8 +50,8 @@ def render(
 
     game.blit(root)  # To make alpha channels work properly for entities
 
-    for object in game_map.objects:
-        game.rgba[object.x, object.y] = object.graphic
+    for obj in game_map.objects:
+        game.rgba[obj.x, obj.y] = obj.graphic
     for item in game_map.items:
         game.rgba[item.x, item.y] = item.graphic
     for creature in game_map.creatures:
@@ -69,7 +70,7 @@ def render(
     context.present(root)
 
 
-def main():
+def main() -> NoReturn:
     """pythonlike"""
     # Set variables
     root_width, root_height = 100, 55
@@ -114,7 +115,7 @@ def main():
                 for event in tcod.event.wait():
                     match event:
                         case tcod.event.Quit():
-                            raise SystemExit()
+                            raise SystemExit
                         case tcod.event.KeyDown():
                             engine.handle_event(event.sym, message_log)
                             waiting = False
