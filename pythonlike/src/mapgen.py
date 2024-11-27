@@ -15,15 +15,15 @@ class Room:
         y_min: int,
         x_max: int,
         y_max: int,
-        door: tuple[int, int],
+        door: tuple[int, int] | None,
     ) -> None:
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
         self.y_max = y_max
         self.door = door
-        self.stairs_up = None
-        self.stairs_down = None
+        self.stairs_up: tuple[int, int] | None = None
+        self.stairs_down: tuple[int, int] | None = None
 
     @property
     def candidates(self) -> list[tuple[int, int]]:
@@ -47,7 +47,7 @@ class Room:
         return self.x_min <= x <= self.x_max and self.y_min <= y <= self.y_max
 
 
-def generate_map(m_width: int, m_height: int) -> np.ndarray:
+def generate_map(m_width: int, m_height: int) -> GameMap:
     min_size = 3
     max_size = 15
     tiles = np.full((m_width, m_height), tile.empty)  # Initialize empty map.
@@ -148,7 +148,7 @@ def _check(
     min_size: int,
     m_width: int,
     m_height: int,
-    start_tile: tuple[int, int],
+    start_tile: tuple[int, int] | None,
     taken: np.ndarray,
 ) -> bool:
     # Fit inside map

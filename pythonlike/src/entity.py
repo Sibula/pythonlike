@@ -9,4 +9,8 @@ class Entity(ABC):
     x: int
     y: int
     name: str
-    graphic: GraphicType = field(init=False)
+    _graphic: GraphicType = field(init=False)
+
+    @property
+    def graphic(self) -> GraphicType:
+        return self._graphic

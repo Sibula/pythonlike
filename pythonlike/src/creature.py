@@ -60,7 +60,7 @@ class Creature(Entity):
 @dataclass
 class Player(Creature):
     name: str = "player"
-    graphic: GraphicType = (ord("@"), (255, 255, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("@"), (255, 255, 0, 255), (0, 0, 0, 0))
     constitution: int = 10
     strength: int = 10
     dexterity: int = 10
@@ -72,7 +72,7 @@ class Player(Creature):
 @dataclass
 class Bat(Creature):
     name: str = "bat"
-    graphic: GraphicType = (ord("b"), (191, 143, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("b"), (191, 143, 0, 255), (0, 0, 0, 0))
     constitution: int = 2
     strength: int = 2
     dexterity: int = 20
@@ -84,7 +84,7 @@ class Bat(Creature):
 @dataclass
 class GiantBat(Creature):
     name: str = "giant bat"
-    graphic: GraphicType = (ord("b"), (255, 0, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("b"), (255, 0, 0, 255), (0, 0, 0, 0))
     constitution: int = 3
     strength: int = 3
     dexterity: int = 19
@@ -96,7 +96,7 @@ class GiantBat(Creature):
 @dataclass
 class Rat(Creature):
     name: str = "rat"
-    graphic: GraphicType = (ord("r"), (191, 143, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("r"), (191, 143, 0, 255), (0, 0, 0, 0))
     constitution: int = 3
     strength: int = 3
     dexterity: int = 18
@@ -108,7 +108,7 @@ class Rat(Creature):
 @dataclass
 class GiantRat(Creature):
     name: str = "giant rat"
-    graphic: GraphicType = (ord("r"), (255, 0, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("r"), (255, 0, 0, 255), (0, 0, 0, 0))
     constitution: int = 5
     strength: int = 4
     dexterity: int = 17
@@ -120,7 +120,7 @@ class GiantRat(Creature):
 @dataclass
 class Goblin(Creature):
     name: str = "goblin"
-    graphic: GraphicType = (ord("o"), (191, 143, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("o"), (191, 143, 0, 255), (0, 0, 0, 0))
     constitution: int = 7
     strength: int = 7
     dexterity: int = 15
@@ -132,7 +132,7 @@ class Goblin(Creature):
 @dataclass
 class Hobgoblin(Creature):
     name: str = "hobgoblin"
-    graphic: GraphicType = (ord("o"), (255, 0, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("o"), (255, 0, 0, 255), (0, 0, 0, 0))
     constitution: int = 9
     strength: int = 9
     dexterity: int = 8
@@ -144,7 +144,7 @@ class Hobgoblin(Creature):
 @dataclass
 class Orc(Creature):
     name: str = "orc"
-    graphic: GraphicType = (ord("o"), (191, 191, 0, 255), (0, 0, 0, 0))
+    _graphic: GraphicType = (ord("o"), (191, 191, 0, 255), (0, 0, 0, 0))
     constitution: int = 12
     strength: int = 12
     dexterity: int = 8

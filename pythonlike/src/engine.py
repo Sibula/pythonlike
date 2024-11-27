@@ -24,12 +24,12 @@ class Engine:
             KeySym.KP_PERIOD: actions.Loot(game_map.player, game_map),
         }
 
-    def handle_event(self, key: KeySym, message_log: deque) -> deque:
+    def handle_event(self, key: KeySym, message_log: deque) -> None:
         if key in self.commands:
             action = self.commands[key]
             self.process_step(action, message_log)
 
-    def process_step(self, action: actions.Action, message_log: deque) -> deque:
+    def process_step(self, action: actions.Action, message_log: deque) -> None:
         msg = action.perform()
         if msg:
             message_log.append(msg)

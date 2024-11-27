@@ -7,8 +7,16 @@ from .util import GraphicType
 
 @dataclass
 class Object(Entity):
-    transparent: bool = field(init=False)
-    walkable: bool = field(init=False)
+    _transparent: bool = field(init=False)
+    _walkable: bool = field(init=False)
+
+    @property
+    def transparent(self) -> bool:
+        return self._transparent
+
+    @property
+    def walkable(self) -> bool:
+        return self._walkable
 
     @abstractmethod
     def interact(self) -> None:

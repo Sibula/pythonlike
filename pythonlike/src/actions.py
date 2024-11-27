@@ -81,7 +81,7 @@ class Loot(Action):
 
 @dataclass
 class Melee(DirectedAction):
-    def perform(self) -> str:
+    def perform(self) -> str | None:
         target = self.target_creature
         if target:
             return resolve_attack(self.entity, target, self.game_map.creatures)
@@ -91,7 +91,7 @@ class Melee(DirectedAction):
 
 @dataclass
 class Move(DirectedAction):
-    def perform(self) -> str:
+    def perform(self) -> None:
         self.entity.x += self.dx
         self.entity.y += self.dy
 
@@ -122,6 +122,10 @@ class CombatResult:
 
 
 def resolve_attack(attacker: Entity, defender: Entity, entities: list[Entity]) -> str:
+    # FIXME: Quick hack to make type checking pass, requires refactoring
+    if not isinstance(attacker, Creature) or not isinstance(defender, Creature):
+        return "Invalid attack: Attacker and defenced must be creatures"
+
     # Calculate values
     hit_chance = attacker.accuracy * (1 - defender.evasion)
     hit_armor_chance = defender.armor
