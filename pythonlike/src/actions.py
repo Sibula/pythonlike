@@ -9,6 +9,7 @@ from .object import Object
 
 # Abstract actions
 
+
 @dataclass
 class Action(ABC):
     entity: Entity
@@ -41,6 +42,7 @@ class DirectedAction(Action):
 
 
 # Actions
+
 
 @dataclass
 class Bump(DirectedAction):
@@ -107,6 +109,7 @@ class Stay(Action):
 
 
 # Combat stuff
+
 
 @dataclass
 class CombatResult:

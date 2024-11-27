@@ -3,13 +3,19 @@ from typing import Literal
 
 import numpy as np
 
-from . import creature, entity, object as fix_object, tile
+from . import creature, entity, tile
+from . import object as fix_object
 from .game_map import GameMap
 
 
 class Room:
     def __init__(
-        self, x_min: int, y_min: int, x_max: int, y_max: int, door: tuple[int, int],
+        self,
+        x_min: int,
+        y_min: int,
+        x_max: int,
+        y_max: int,
+        door: tuple[int, int],
     ) -> None:
         self.x_min = x_min
         self.x_max = x_max
@@ -47,7 +53,8 @@ def generate_map(m_width: int, m_height: int) -> np.ndarray:
     tiles = np.full((m_width, m_height), tile.empty)  # Initialize empty map.
     rooms = []  # List to store generated rooms in.
     taken = np.zeros_like(
-        tiles, dtype=int,
+        tiles,
+        dtype=int,
     )  # Empty array to store if a tile belongs to a room.
     taken_ratio = 0  # Ratio of map filled with rooms.
     while taken_ratio < 0.75:
@@ -119,7 +126,10 @@ def _create_room(
                 taken[x, y] = 1
 
 
-def _check_dir(start_tile: tuple[int, int], room: Room) -> Literal["left", "right", "up", "down"]:
+def _check_dir(
+    start_tile: tuple[int, int],
+    room: Room,
+) -> Literal["left", "right", "up", "down"]:
     # Check which direction the new room should grow.
     x, y = start_tile
     if x < room.x_min:

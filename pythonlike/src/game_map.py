@@ -7,7 +7,13 @@ from .object import Object
 
 
 class GameMap:
-    def __init__(self, w: int, h: int, tiles: np.ndarray, entities: list[Entity]) -> None:
+    def __init__(
+        self,
+        w: int,
+        h: int,
+        tiles: np.ndarray,
+        entities: list[Entity],
+    ) -> None:
         self.w = w
         self.h = h
         self.tiles = tiles

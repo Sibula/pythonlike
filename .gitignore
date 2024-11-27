@@ -46,7 +46,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
-/.nox/
+.nox/
 
 # Translations
 *.mo
@@ -109,3 +109,9 @@ venv.bak/
 
 # Visual Studio Code
 .vscode/
+
+# Ruff
+.ruff_cache/
+
+# uv
+.uv_cache/

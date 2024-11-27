@@ -124,5 +124,4 @@ def main() -> NoReturn:
             render(context, root, game, log, info, game_map, message_log)
 
 
-if __name__ == "__main__":
-    main(prog_name="pythonlike")
+main()
