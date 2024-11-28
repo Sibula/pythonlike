@@ -101,8 +101,8 @@ venv = ".venv"
 # Unused for now
 
 [tool.coverage.paths]
-source = ["src", "*/site-packages"]
-tests = ["tests", "*/tests"]
+source = ["src"]
+tests = ["tests"]
 
 [tool.coverage.run]
 branch = true
